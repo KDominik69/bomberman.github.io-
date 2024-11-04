@@ -41,6 +41,9 @@
         .powerup {
             background-color: purple;
         }
+        .enemy {
+            background-color: pink;
+        }
         #gameOver {
             display: none;
             text-align: center;
@@ -71,37 +74,38 @@
     const gameBoard = document.getElementById("gameBoard");
     const gameOverScreen = document.getElementById("gameOver");
     const restartButton = document.getElementById("restartButton");
-    const gridSizeX = 20;  // Pálya szélessége
-    const gridSizeY = 15;  // Pálya magassága
+    const gridSizeX = 20;
+    const gridSizeY = 15;
     let playerPos = { x: 0, y: 0 };
-    let startingPosition = { x: 0, y: 0 }; // Kezdőpozíció következő pályára
+    let startingPosition = { x: 0, y: 0 };
     let explosionRange = 1;
     let bombPlaced = false;
-    let isGameOver = false; // Játék vége állapot
+    let isGameOver = false;
+    let enemies = [];
 
-    // Játéktér újragenerálása
     function generateLevel() {
         gameBoard.innerHTML = "";
         const cells = [];
-        
+        enemies = [];
+
         for (let i = 0; i < gridSizeY; i++) {
             cells[i] = [];
             for (let j = 0; j < gridSizeX; j++) {
                 const cell = document.createElement("div");
                 cell.classList.add("cell");
 
-                // Játékos kezdőpozíciója a startingPosition szerint
                 if (i === startingPosition.y && j === startingPosition.x) {
                     cell.classList.add("player");
                     playerPos = { x: startingPosition.x, y: startingPosition.y };
                 } else if (i % 2 === 0 && j % 2 === 0) {
-                    // Falak elhelyezése
                     if (!((i === 2 && j === 0) || (i === 0 && j === 2))) {
                         cell.classList.add("wall");
                     }
                 } else if (Math.random() < 0.3) {
-                    // Rombolható fal
                     cell.classList.add("destructible-wall");
+                } else if (Math.random() < 0.1) {
+                    cell.classList.add("enemy");
+                    enemies.push({ x: j, y: i });
                 }
 
                 cells[i][j] = cell;
@@ -109,7 +113,6 @@
             }
         }
 
-        // Kijárat és powerup elhelyezése
         let exitPlaced = false;
         let powerupPlaced = false;
         while (!exitPlaced || !powerupPlaced) {
@@ -132,7 +135,6 @@
 
     let cells = generateLevel();
 
-    // Játékos mozgatása
     function movePlayer(dx, dy) {
         if (isGameOver) return;
 
@@ -141,20 +143,18 @@
 
         if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
             const targetCell = cells[newY][newX];
-            if (!targetCell.classList.contains("wall") && !targetCell.classList.contains("destructible-wall")) {
+            if (!targetCell.classList.contains("wall") && !targetCell.classList.contains("destructible-wall") && !targetCell.classList.contains("enemy")) {
                 cells[playerPos.y][playerPos.x].classList.remove("player");
                 playerPos.x = newX;
                 playerPos.y = newY;
                 cells[playerPos.y][playerPos.x].classList.add("player");
 
-                // Ha a játékos rálép a kijáratra, új pálya generálása
                 if (targetCell.classList.contains("exit")) {
                     alert("Tovább a következő pályára!");
-                    startingPosition = { x: playerPos.x, y: playerPos.y }; // Új kezdőpozíció beállítása
+                    startingPosition = { x: playerPos.x, y: playerPos.y };
                     cells = generateLevel();
                 }
 
-                // Ha a játékos felveszi a powerup-ot, növeli a robbanás hatótávját
                 if (targetCell.classList.contains("powerup")) {
                     targetCell.classList.remove("powerup");
                     increaseExplosionRange();
@@ -163,7 +163,6 @@
         }
     }
 
-    // Bomba elhelyezése
     function placeBomb() {
         if (bombPlaced || isGameOver) return;
 
@@ -179,7 +178,6 @@
         }, 2000);
     }
 
-    // Robbanás generálása
     function explode(x, y) {
         const directions = [
             { dx: 0, dy: -1 },
@@ -214,6 +212,11 @@
                         break;
                     }
 
+                    if (cell.classList.contains("enemy")) {
+                        cell.classList.remove("enemy");
+                        enemies = enemies.filter(enemy => !(enemy.x === newX && enemy.y === newY));
+                    }
+
                     cell.classList.add("explosion");
 
                     if (newX === playerPos.x && newY === playerPos.y) {
@@ -232,38 +235,64 @@
         }, 1000);
     }
 
-    // Játék vége
     function gameOver() {
         isGameOver = true;
         gameOverScreen.style.display = "block";
     }
 
-    // Robbanási hatótáv növelése
     function increaseExplosionRange() {
         explosionRange++;
     }
 
-    // Újraindítás gomb eseménykezelője
-    restartButton.addEventListener("click", () => {
-        isGameOver = false;
-        explosionRange = 1;
-        bombPlaced = false;
-        gameOverScreen.style.display = "none";
-        startingPosition = { x: 0, y: 0 }; // Kezdőpozíció visszaállítása az első pályára
-        cells = generateLevel();
-    });
-
-    // Billentyűk eseménykezelője
-    document.addEventListener("keydown", (event) => {
+    function moveEnemies() {
         if (isGameOver) return;
 
-        switch (event.key) {
+        enemies.forEach(enemy => {
+            const direction = Math.floor(Math.random() * 4);
+            let newX = enemy.x;
+            let newY = enemy.y;
+
+            switch (direction) {
+                case 0: newY--; break;
+                case 1: newY++; break;
+                case 2: newX--; break;
+                case 3: newX++; break;
+            }
+
+            if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
+                const targetCell = cells[newY][newX];
+                if (!targetCell.classList.contains("wall") && !targetCell.classList.contains("destructible-wall") && !targetCell.classList.contains("bomb") && !targetCell.classList.contains("enemy")) {
+                    cells[enemy.y][enemy.x].classList.remove("enemy");
+                    enemy.x = newX;
+                    enemy.y = newY;
+                    cells[enemy.y][enemy.x].classList.add("enemy");
+
+                    if (newX === playerPos.x && newY === playerPos.y) {
+                        gameOver();
+                    }
+                }
+            }
+        });
+    }
+
+    setInterval(moveEnemies, 500);
+
+    document.addEventListener("keydown", (e) => {
+        switch (e.key) {
             case "ArrowUp": movePlayer(0, -1); break;
             case "ArrowDown": movePlayer(0, 1); break;
             case "ArrowLeft": movePlayer(-1, 0); break;
             case "ArrowRight": movePlayer(1, 0); break;
             case " ": placeBomb(); break;
         }
+    });
+
+    restartButton.addEventListener("click", () => {
+        isGameOver = false;
+        gameOverScreen.style.display = "none";
+        startingPosition = { x: 0, y: 0 };
+        explosionRange = 1;
+        cells = generateLevel();
     });
 </script>
 
