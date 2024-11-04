@@ -73,7 +73,8 @@
     const restartButton = document.getElementById("restartButton");
     const gridSizeX = 20;  // Pálya szélessége
     const gridSizeY = 15;  // Pálya magassága
-    const playerPos = { x: 0, y: 0 };
+    let playerPos = { x: 0, y: 0 };
+    let startingPosition = { x: 0, y: 0 }; // Kezdőpozíció következő pályára
     let explosionRange = 1;
     let bombPlaced = false;
     let isGameOver = false; // Játék vége állapot
@@ -89,11 +90,12 @@
                 const cell = document.createElement("div");
                 cell.classList.add("cell");
 
-                // Bal felső sarok üres, játékos pozíciója
-                if (i === 0 && j === 0) {
+                // Játékos kezdőpozíciója a startingPosition szerint
+                if (i === startingPosition.y && j === startingPosition.x) {
                     cell.classList.add("player");
+                    playerPos = { x: startingPosition.x, y: startingPosition.y };
                 } else if (i % 2 === 0 && j % 2 === 0) {
-                    // Falak elhelyezése egymás mellett, de nem a kezdő pozíció körül
+                    // Falak elhelyezése
                     if (!((i === 2 && j === 0) || (i === 0 && j === 2))) {
                         cell.classList.add("wall");
                     }
@@ -132,7 +134,7 @@
 
     // Játékos mozgatása
     function movePlayer(dx, dy) {
-        if (isGameOver) return; // Ha vége a játéknak, ne mozgassuk a játékost
+        if (isGameOver) return;
 
         const newX = playerPos.x + dx;
         const newY = playerPos.y + dy;
@@ -148,10 +150,11 @@
                 // Ha a játékos rálép a kijáratra, új pálya generálása
                 if (targetCell.classList.contains("exit")) {
                     alert("Tovább a következő pályára!");
+                    startingPosition = { x: playerPos.x, y: playerPos.y }; // Új kezdőpozíció beállítása
                     cells = generateLevel();
                 }
 
-                // Ha a játékos felveszi a powerup-ot, a robbanás hatótávját növeljük
+                // Ha a játékos felveszi a powerup-ot, növeli a robbanás hatótávját
                 if (targetCell.classList.contains("powerup")) {
                     targetCell.classList.remove("powerup");
                     increaseExplosionRange();
@@ -160,7 +163,7 @@
         }
     }
 
-    // Bomba elhelyezése (egyszerre csak egy bomba)
+    // Bomba elhelyezése
     function placeBomb() {
         if (bombPlaced || isGameOver) return;
 
@@ -186,9 +189,8 @@
         ];
 
         cells[y][x].classList.add("explosion");
-        
-        // Robbanás következményei
-        let playerHit = false; // Játékos találatának ellenőrzése
+
+        let playerHit = false;
         directions.forEach(dir => {
             for (let i = 1; i <= explosionRange; i++) {
                 const newX = x + dir.dx * i;
@@ -196,7 +198,7 @@
 
                 if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
                     const cell = cells[newY][newX];
-                    
+
                     if (cell.classList.contains("wall")) break;
                     if (cell.classList.contains("destructible-wall")) {
                         cell.classList.remove("destructible-wall");
@@ -211,10 +213,9 @@
                         }
                         break;
                     }
-                    
+
                     cell.classList.add("explosion");
 
-                    // Ellenőrizzük, hogy a játékos robbanásba került-e
                     if (newX === playerPos.x && newY === playerPos.y) {
                         playerHit = true;
                     }
@@ -222,7 +223,6 @@
             }
         });
 
-        // Ha a játékos a robbanásba került
         if (playerHit) {
             gameOver();
         }
@@ -235,36 +235,37 @@
     // Játék vége
     function gameOver() {
         isGameOver = true;
-        gameOverScreen.style.display = "block"; // Játék vége képernyő megjelenítése
+        gameOverScreen.style.display = "block";
     }
 
     // Robbanási hatótáv növelése
     function increaseExplosionRange() {
         explosionRange++;
-        console.log("Robbanási hatótáv megnövelve: " + explosionRange);
     }
 
-    // Mozgás billentyűzet gombnyomásokra
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowUp") movePlayer(0, -1);
-        else if (event.key === "ArrowDown") movePlayer(0, 1);
-        else if (event.key === "ArrowLeft") movePlayer(-1, 0);
-        else if (event.key === "ArrowRight") movePlayer(1, 0);
-        else if (event.code === "Space") placeBomb();
-    });
-
-    // Újraindítás gomb
+    // Újraindítás gomb eseménykezelője
     restartButton.addEventListener("click", () => {
-        isGameOver = false; // Játék újraindítása
-        playerPos.x = 0;
-        playerPos.y = 0;
+        isGameOver = false;
         explosionRange = 1;
         bombPlaced = false;
-        gameOverScreen.style.display = "none"; // Játék vége képernyő eltüntetése
-        cells = generateLevel(); // Új pálya generálása
+        gameOverScreen.style.display = "none";
+        startingPosition = { x: 0, y: 0 }; // Kezdőpozíció visszaállítása az első pályára
+        cells = generateLevel();
     });
 
+    // Billentyűk eseménykezelője
+    document.addEventListener("keydown", (event) => {
+        if (isGameOver) return;
+
+        switch (event.key) {
+            case "ArrowUp": movePlayer(0, -1); break;
+            case "ArrowDown": movePlayer(0, 1); break;
+            case "ArrowLeft": movePlayer(-1, 0); break;
+            case "ArrowRight": movePlayer(1, 0); break;
+            case " ": placeBomb(); break;
+        }
+    });
 </script>
+
 </body>
 </html>
-// ha tovább megyek akkor alapbol rakja vissza a playert a balfelső sarokba
