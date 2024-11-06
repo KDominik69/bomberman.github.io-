@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bomberman-játék</title>
     <style>
-        /* Test teljes háttérkép beállítása */
         body {
             background-image: url('hater.png');
             background-size: cover;
@@ -17,14 +16,12 @@
             align-items: center;
             height: 100vh;
         }
-        /* A játék konténerének központosítása */
         #gameContainer {
             padding: 20px;
-            background-color: rgba(255, 255, 255, 0.8); /* Enyhén áttetsző háttér a pálya körül */
+            background-color: rgba(255, 255, 255, 0.8);
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
-        /* Pálya beállítása */
         #gameBoard {
             display: grid;
             grid-template-columns: repeat(20, 40px);
@@ -273,13 +270,18 @@
         }
 
         setTimeout(() => {
-            document.querySelectorAll(".explosion").forEach(cell => cell.classList.remove("explosion"));
-        }, 1000);
-    }
+            cells[y][x].classList.remove("explosion");
+            directions.forEach(dir => {
+                for (let i = 1; i <= explosionRange; i++) {
+                    const newX = x + dir.dx * i;
+                    const newY = y + dir.dy * i;
 
-    function gameOver() {
-        isGameOver = true;
-        gameOverScreen.style.display = "block";
+                    if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
+                        cells[newY][newX].classList.remove("explosion");
+                    }
+                }
+            });
+        }, 1000);
     }
 
     function increaseExplosionRange() {
@@ -289,49 +291,76 @@
     function moveEnemies() {
         if (isGameOver) return;
 
-        enemies.forEach(enemy => {
-            const direction = Math.floor(Math.random() * 4);
-            const dx = [0, 0, -1, 1][direction];
-            const dy = [-1, 1, 0, 0][direction];
+        enemies.forEach((enemy, index) => {
+            const directions = [
+                { dx: 0, dy: -1 },
+                { dx: 0, dy: 1 },
+                { dx: -1, dy: 0 },
+                { dx: 1, dy: 0 },
+            ];
 
-            const newX = enemy.x + dx;
-            const newY = enemy.y + dy;
+            const dir = directions[Math.floor(Math.random() * directions.length)];
+            const newX = enemy.x + dir.dx;
+            const newY = enemy.y + dir.dy;
 
-            if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY && !cells[newY][newX].classList.contains("wall") && !cells[newY][newX].classList.contains("destructible-wall") && !cells[newY][newX].classList.contains("enemy")) {
+            if (
+                newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY &&
+                !cells[newY][newX].classList.contains("wall") &&
+                !cells[newY][newX].classList.contains("destructible-wall") &&
+                !cells[newY][newX].classList.contains("enemy")
+            ) {
                 cells[enemy.y][enemy.x].classList.remove("enemy");
                 enemy.x = newX;
                 enemy.y = newY;
-                cells[enemy.y][enemy.x].classList.add("enemy");
 
-                if (enemy.x === playerPos.x && enemy.y === playerPos.y) {
+                if (newX === playerPos.x && newY === playerPos.y) {
                     gameOver();
+                } else {
+                    cells[enemy.y][enemy.x].classList.add("enemy");
                 }
             }
         });
     }
 
-    setInterval(moveEnemies, 800);
+    function gameOver() {
+        isGameOver = true;
+        gameOverScreen.style.display = "block";
+    }
 
-    document.addEventListener("keydown", (e) => {
+    function restartGame() {
+        isGameOver = false;
+        bombPlaced = false;
+        explosionRange = 1;
+        startingPosition = { x: 0, y: 0 };
+        playerPos = { x: 0, y: 0 };
+        cells = generateLevel();
+        gameOverScreen.style.display = "none";
+    }
+
+    window.addEventListener("keydown", (e) => {
         if (isGameOver) return;
 
         switch (e.key) {
-            case "ArrowUp": movePlayer(0, -1); break;
-            case "ArrowDown": movePlayer(0, 1); break;
-            case "ArrowLeft": movePlayer(-1, 0); break;
-            case "ArrowRight": movePlayer(1, 0); break;
-            case " ": placeBomb(); break;
+            case "ArrowUp":
+                movePlayer(0, -1);
+                break;
+            case "ArrowDown":
+                movePlayer(0, 1);
+                break;
+            case "ArrowLeft":
+                movePlayer(-1, 0);
+                break;
+            case "ArrowRight":
+                movePlayer(1, 0);
+                break;
+            case " ":
+                placeBomb();
+                break;
         }
     });
 
-    restartButton.addEventListener("click", () => {
-        gameOverScreen.style.display = "none";
-        startingPosition = { x: 0, y: 0 };
-        explosionRange = 1;
-        bombPlaced = false;
-        isGameOver = false;
-        cells = generateLevel();
-    });
+    restartButton.addEventListener("click", restartGame);
+    setInterval(moveEnemies, 1000);
 </script>
 
 </body>
