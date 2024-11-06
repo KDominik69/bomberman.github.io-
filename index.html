@@ -7,8 +7,8 @@
     <style>
         #gameBoard {
             display: grid;
-            grid-template-columns: repeat(20, 40px); /* Szélesebb pálya: 20 oszlop */
-            grid-template-rows: repeat(15, 40px);    /* Magasabb pálya: 15 sor */
+            grid-template-columns: repeat(20, 40px);
+            grid-template-rows: repeat(15, 40px);
             gap: 2px;
             width: 840px;
             margin: 20px auto;
@@ -21,7 +21,11 @@
             position: relative;
         }
         .player {
-            background-color: blue;
+            background-image: url('mc_walking_down.gif');
+            background-size: cover;
+            background-position: center;
+            width: 40px;
+            height: 40px;
         }
         .wall {
             background-color: gray;
@@ -30,7 +34,11 @@
             background-color: brown;
         }
         .bomb {
-            background-color: red;
+            background-image: url('bomba_2.png');
+            background-size: cover;
+            background-position: center;
+            width: 40px;
+            height: 40px;
         }
         .explosion {
             background-color: orange;
@@ -43,6 +51,7 @@
         }
         .enemy {
             background-color: hotpink;
+            border-radius: 50%;
         }
         #gameOver {
             display: none;
@@ -103,7 +112,7 @@
                     }
                 } else if (Math.random() < 0.3) {
                     cell.classList.add("destructible-wall");
-                } else if (Math.random() < 0.1) {
+                } else if (Math.random() < 0.05) {
                     cell.classList.add("enemy");
                     enemies.push({ x: j, y: i });
                 }
@@ -158,6 +167,10 @@
                 if (targetCell.classList.contains("powerup")) {
                     targetCell.classList.remove("powerup");
                     increaseExplosionRange();
+                }
+
+                if (targetCell.classList.contains("explosion")) {
+                    gameOver();
                 }
             }
         }
@@ -249,35 +262,30 @@
 
         enemies.forEach(enemy => {
             const direction = Math.floor(Math.random() * 4);
-            let newX = enemy.x;
-            let newY = enemy.y;
+            const dx = [0, 0, -1, 1][direction];
+            const dy = [-1, 1, 0, 0][direction];
 
-            switch (direction) {
-                case 0: newY--; break;
-                case 1: newY++; break;
-                case 2: newX--; break;
-                case 3: newX++; break;
-            }
+            const newX = enemy.x + dx;
+            const newY = enemy.y + dy;
 
-            if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
-                const targetCell = cells[newY][newX];
-                if (!targetCell.classList.contains("wall") && !targetCell.classList.contains("destructible-wall") && !targetCell.classList.contains("bomb") && !targetCell.classList.contains("enemy")) {
-                    cells[enemy.y][enemy.x].classList.remove("enemy");
-                    enemy.x = newX;
-                    enemy.y = newY;
-                    cells[enemy.y][enemy.x].classList.add("enemy");
+            if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY && !cells[newY][newX].classList.contains("wall") && !cells[newY][newX].classList.contains("destructible-wall") && !cells[newY][newX].classList.contains("enemy")) {
+                cells[enemy.y][enemy.x].classList.remove("enemy");
+                enemy.x = newX;
+                enemy.y = newY;
+                cells[enemy.y][enemy.x].classList.add("enemy");
 
-                    if (newX === playerPos.x && newY === playerPos.y) {
-                        gameOver();
-                    }
+                if (enemy.x === playerPos.x && enemy.y === playerPos.y) {
+                    gameOver();
                 }
             }
         });
     }
 
-    setInterval(moveEnemies, 500);
+    setInterval(moveEnemies, 800);
 
     document.addEventListener("keydown", (e) => {
+        if (isGameOver) return;
+
         switch (e.key) {
             case "ArrowUp": movePlayer(0, -1); break;
             case "ArrowDown": movePlayer(0, 1); break;
@@ -288,10 +296,11 @@
     });
 
     restartButton.addEventListener("click", () => {
-        isGameOver = false;
         gameOverScreen.style.display = "none";
         startingPosition = { x: 0, y: 0 };
         explosionRange = 1;
+        bombPlaced = false;
+        isGameOver = false;
         cells = generateLevel();
     });
 </script>
