@@ -3,15 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bomberman</title>
+    <title>Bomberman-játék</title>
     <style>
+        /* Test teljes háttérkép beállítása */
+        body {
+            background-image: url('hater.png');
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        /* A játék konténerének központosítása */
+        #gameContainer {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Enyhén áttetsző háttér a pálya körül */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        /* Pálya beállítása */
         #gameBoard {
             display: grid;
             grid-template-columns: repeat(20, 40px);
             grid-template-rows: repeat(15, 40px);
             gap: 2px;
             width: 840px;
-            margin: 20px auto;
+            margin: 0 auto;
             border: 2px solid #333;
         }
         .cell {
@@ -34,7 +54,7 @@
             background-color: brown;
         }
         .bomb {
-            background-image: url('bomba_2.png');
+            background-image: url('robban_a_bomba.gif');
             background-size: cover;
             background-position: center;
             width: 40px;
@@ -69,14 +89,16 @@
 </head>
 <body>
 
-<h2 style="text-align: center;">Bomberman</h2>
-<p style="text-align: center;">Mozgás: Nyílbillentyűk | Bomba: Space</p>
+<div id="gameContainer">
+    <h2 style="text-align: center;">Bomberman-játék</h2>
+    <p style="text-align: center;">Mozgás: Nyílbillentyűk | Bomba: Space</p>
+    
+    <div id="gameBoard"></div>
 
-<div id="gameBoard"></div>
-
-<div id="gameOver">
-    <h3>MEGHALTÁL!</h3>
-    <button id="restartButton">Újra</button>
+    <div id="gameOver">
+        <h3>MEGHALTÁL!</h3>
+        <button id="restartButton">Újra</button>
+    </div>
 </div>
 
 <script>
@@ -186,7 +208,13 @@
 
         setTimeout(() => {
             cells[bombY][bombX].classList.remove("bomb");
-            explode(bombX, bombY);
+
+            if (bombX === playerPos.x && bombY === playerPos.y) {
+                gameOver();
+            } else {
+                explode(bombX, bombY);
+            }
+
             bombPlaced = false;
         }, 2000);
     }
@@ -201,7 +229,8 @@
 
         cells[y][x].classList.add("explosion");
 
-        let playerHit = false;
+        let playerHit = x === playerPos.x && y === playerPos.y;
+
         directions.forEach(dir => {
             for (let i = 1; i <= explosionRange; i++) {
                 const newX = x + dir.dx * i;
