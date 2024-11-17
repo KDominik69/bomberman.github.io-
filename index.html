@@ -127,7 +127,7 @@
 
 <div id="gameContainer">
     <h2 style="text-align: center;">Selejtes-Bomberman</h2>
-    <p style="text-align: center;">Mozgás: W,A,S,D | Bomba: Space</p>
+    <p style="text-align: center;">Mozgás: Nyílbillentyűk | Bomba: Space</p>
     
     <div id="gameBoard"></div>
 
@@ -469,16 +469,16 @@ function activateFreeze() {
         if (isGameOver) return;
 
         switch (e.key) {
-            case "w":
+            case "ArrowUp":
                 movePlayer(0, -1);
                 break;
-            case "s":
+            case "ArrowDown":
                 movePlayer(0, 1);
                 break;
-            case "a":
+            case "ArrowLeft":
                 movePlayer(-1, 0);
                 break;
-            case "d":
+            case "ArrowRight":
                 movePlayer(1, 0);
                 break;
             case " ":
