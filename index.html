@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bomberman-játék</title>
+    <title>Selejtes-Bomberman</title>
     <style>
         body {
             background-image: url('hater.png');
@@ -126,7 +126,7 @@
 <body>
 
 <div id="gameContainer">
-    <h2 style="text-align: center;">Bomberman-játék</h2>
+    <h2 style="text-align: center;">Selejtes-Bomberman</h2>
     <p style="text-align: center;">Mozgás: Nyílbillentyűk | Bomba: Space</p>
     
     <div id="gameBoard"></div>
@@ -469,16 +469,16 @@ function activateFreeze() {
         if (isGameOver) return;
 
         switch (e.key) {
-            case "ArrowUp":
+            case "w":
                 movePlayer(0, -1);
                 break;
-            case "ArrowDown":
+            case "s":
                 movePlayer(0, 1);
                 break;
-            case "ArrowLeft":
+            case "a":
                 movePlayer(-1, 0);
                 break;
-            case "ArrowRight":
+            case "d":
                 movePlayer(1, 0);
                 break;
             case " ":
