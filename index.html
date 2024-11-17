@@ -79,7 +79,6 @@
             background-image: url(' kijarat.png');
             background-size: cover;
             background-position: center;
-           
             background-color: green;
         }
         .powerup {
@@ -230,11 +229,12 @@
             playerPos.y = newY;
             cells[playerPos.y][playerPos.x].classList.add("player");
 
-            if (targetCell.classList.contains(" exit")) {
-                alert("Tovább a következő pályára!");
-                startingPosition = { x: playerPos.x, y: playerPos.y };
-                cells = generateLevel();
-            }
+            if (targetCell.classList.contains("exit")) { // Javított verzió
+    alert("Tovább a következő pályára!");
+    startingPosition = { x: playerPos.x, y: playerPos.y };
+    cells = generateLevel();
+}
+
 
             if (targetCell.classList.contains("powerup")) {
                 targetCell.classList.remove("powerup");
