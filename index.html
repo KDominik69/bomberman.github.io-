@@ -45,10 +45,15 @@
             height: 40px;
         }
         .wall {
-            background-color: gray;
+            background-image: url('fal.png');
+            background-size: cover;
+            background-position: center;
         }
         .destructible-wall {
-            background-color: brown;
+            
+            background-image: url('torhetofal.png');
+            background-size: cover;
+            background-position: center;
         }
         .bomb {
             background-image: url('robban_a_bomba.gif');
@@ -64,16 +69,26 @@
             width: 40px;
             height: 40px;
         }
+        .freeze-hidden {
+            background-image: url('freeze.png');
+            background-size: cover;
+            background-position: center;
+            
+        }
         .exit {
+            background-image: url(' kijarat.png');
+            background-size: cover;
+            background-position: center;
+           
             background-color: green;
         }
         .powerup {
+            background-image: url('robbanas_plusz_1_power_up.gif');
+            background-size: cover;
+            background-position: center;
             background-color: purple;
         }
-        .enemy {
-            background-color: hotpink;
-            border-radius: 50%;
-        }
+        
         #gameOver {
             display: none;
             text-align: center;
@@ -86,6 +101,27 @@
             border: none;
             cursor: pointer;
         }
+
+        .tudjaholvagy {
+            background-image: url('tudjaholvagy.png');
+            background-size: cover;
+            background-position: center;
+            
+        }
+
+        .enemy {
+            background-image: url('alap.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .wallwalker {
+            background-image: url('falonmegy.png');
+            background-size: cover;
+            background-position: center;
+            
+        }
+
     </style>
 </head>
 <body>
@@ -114,90 +150,122 @@
     let bombPlaced = false;
     let isGameOver = false;
     let enemies = [];
+    let isFrozen = false;
+    let freezeTimer;
 
     function generateLevel() {
-        gameBoard.innerHTML = "";
-        const cells = [];
-        enemies = [];
+    gameBoard.innerHTML = "";
+    const cells = [];
+    enemies = [];
 
-        for (let i = 0; i < gridSizeY; i++) {
-            cells[i] = [];
-            for (let j = 0; j < gridSizeX; j++) {
-                const cell = document.createElement("div");
-                cell.classList.add("cell");
+    for (let i = 0; i < gridSizeY; i++) {
+        cells[i] = [];
+        for (let j = 0; j < gridSizeX; j++) {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
 
-                if (i === startingPosition.y && j === startingPosition.x) {
-                    cell.classList.add("player");
-                    playerPos = { x: startingPosition.x, y: startingPosition.y };
-                } else if (i % 2 === 0 && j % 2 === 0) {
-                    if (!((i === 2 && j === 0) || (i === 0 && j === 2))) {
-                        cell.classList.add("wall");
-                    }
-                } else if (Math.random() < 0.3) {
-                    cell.classList.add("destructible-wall");
-                } else if (Math.random() < 0.05) {
-                    cell.classList.add("enemy");
-                    enemies.push({ x: j, y: i });
+            if (i === startingPosition.y && j === startingPosition.x) {
+                cell.classList.add("player");
+                playerPos = { x: startingPosition.x, y: startingPosition.y };
+            } else if (i % 2 === 0 && j % 2 === 0) {
+                if (!((i === 2 && j === 0) || (i === 0 && j === 2))) {
+                    cell.classList.add("wall");
                 }
-
-                cells[i][j] = cell;
-                gameBoard.appendChild(cell);
+            } else if (Math.random() < 0.3) {
+                cell.classList.add("destructible-wall");
+            } else if (Math.random() < 0.05) {
+                cell.classList.add("enemy");
+                enemies.push({ x: j, y: i, type: "default" });
+            } else if (Math.random() < 0.02) {
+                cell.classList.add("tudjaholvagy");
+                enemies.push({ x: j, y: i, type: "tudjaholvagy" });
+            } else if (Math.random() < 0.01) {
+                cell.classList.add("wallwalker");
+                enemies.push({ x: j, y: i, type: "wallwalker" });
             }
+
+            cells[i][j] = cell;
+            gameBoard.appendChild(cell);
+        }
+    }
+
+    let exitPlaced = false;
+    let powerupPlaced = false;
+    while (!exitPlaced || !powerupPlaced) {
+        const randomX = Math.floor(Math.random() * gridSizeX);
+        const randomY = Math.floor(Math.random() * gridSizeY);
+
+        if (!exitPlaced && cells[randomY][randomX].classList.contains("destructible-wall")) {
+            cells[randomY][randomX].classList.add("exit-hidden");
+            exitPlaced = true;
         }
 
-        let exitPlaced = false;
-        let powerupPlaced = false;
-        while (!exitPlaced || !powerupPlaced) {
-            const randomX = Math.floor(Math.random() * gridSizeX);
-            const randomY = Math.floor(Math.random() * gridSizeY);
-
-            if (!exitPlaced && cells[randomY][randomX].classList.contains("destructible-wall")) {
-                cells[randomY][randomX].classList.add("exit-hidden");
-                exitPlaced = true;
-            }
-
-            if (!powerupPlaced && cells[randomY][randomX].classList.contains("destructible-wall") && !cells[randomY][randomX].classList.contains("exit-hidden")) {
+        if (!powerupPlaced && cells[randomY][randomX].classList.contains("destructible-wall") && !cells[randomY][randomX].classList.contains("exit-hidden")) {
+            if (Math.random() < 0.5) {
                 cells[randomY][randomX].classList.add("powerup-hidden");
+                powerupPlaced = true;
+            } else {
+                cells[randomY][randomX].classList.add("freeze-hidden");
                 powerupPlaced = true;
             }
         }
-
-        return cells;
     }
+
+    return cells;
+}
 
     let cells = generateLevel();
 
     function movePlayer(dx, dy) {
-        if (isGameOver) return;
+    if (isGameOver) return;
 
-        const newX = playerPos.x + dx;
-        const newY = playerPos.y + dy;
+    const newX = playerPos.x + dx;
+    const newY = playerPos.y + dy;
 
-        if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
-            const targetCell = cells[newY][newX];
-            if (!targetCell.classList.contains("wall") && !targetCell.classList.contains("destructible-wall") && !targetCell.classList.contains("enemy")) {
-                cells[playerPos.y][playerPos.x].classList.remove("player");
-                playerPos.x = newX;
-                playerPos.y = newY;
-                cells[playerPos.y][playerPos.x].classList.add("player");
+    if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
+        const targetCell = cells[newY][newX];
+        if (!targetCell.classList.contains("wall") && !targetCell.classList.contains("destructible-wall") && !targetCell.classList.contains("enemy")) {
+            cells[playerPos.y][playerPos.x].classList.remove("player");
+            playerPos.x = newX;
+            playerPos.y = newY;
+            cells[playerPos.y][playerPos.x].classList.add("player");
 
-                if (targetCell.classList.contains("exit")) {
-                    alert("Tovább a következő pályára!");
-                    startingPosition = { x: playerPos.x, y: playerPos.y };
-                    cells = generateLevel();
-                }
+            if (targetCell.classList.contains(" exit")) {
+                alert("Tovább a következő pályára!");
+                startingPosition = { x: playerPos.x, y: playerPos.y };
+                cells = generateLevel();
+            }
 
-                if (targetCell.classList.contains("powerup")) {
-                    targetCell.classList.remove("powerup");
-                    increaseExplosionRange();
-                }
+            if (targetCell.classList.contains("powerup")) {
+                targetCell.classList.remove("powerup");
+                increaseExplosionRange();
+            }
 
-                if (targetCell.classList.contains("explosion")) {
-                    gameOver();
-                }
+            if (targetCell.classList.contains("freeze-hidden")) {
+                targetCell.classList.remove("freeze-hidden");
+                activateFreeze();
+            }
+
+            if (targetCell.classList.contains("explosion")) {
+                gameOver();
             }
         }
     }
+}
+
+function activateFreeze() {
+    isFrozen = true;
+    enemies.forEach(enemy => {
+        cells[enemy.y][enemy.x].classList.remove("enemy");
+    });
+
+    freezeTimer = setTimeout(() => {
+        isFrozen = false;
+        enemies.forEach(enemy => {
+            cells[enemy.y][enemy.x].classList.add("enemy");
+        });
+    }, 5000);
+}
 
     function placeBomb() {
         if (bombPlaced || isGameOver) return;
@@ -210,7 +278,7 @@
         setTimeout(() => {
             cells[bombY][bombX].classList.remove("bomb");
 
-            if (bombX === playerPos.x && bombY === playerPos.y) {
+            if (bombX === playerPos .x && bombY === playerPos.y) {
                 gameOver();
             } else {
                 explode(bombX, bombY);
@@ -293,34 +361,88 @@
     }
 
     function moveEnemies() {
-        if (isGameOver) return;
+        if (isGameOver || isFrozen) return;
 
-        enemies.forEach((enemy, index) => {
+        enemies.forEach((enemy) => {
             const directions = [
                 { dx: 0, dy: -1 },
-                { dx: 0, dy: 1 },
-                { dx: -1, dy: 0 },
-                { dx: 1, dy: 0 },
+                { dx: 0, dy: 1 }, 
+                { dx: -1, dy: 0 }, 
+                { dx: 1, dy: 0 }  
             ];
 
-            const dir = directions[Math.floor(Math.random() * directions.length)];
-            const newX = enemy.x + dir.dx;
-            const newY = enemy.y + dir.dy;
+            if (enemy.type === "tudjaholvagy") {
+                let bestDirection = null;
+                let minDistance = Infinity;
 
-            if (
-                newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY &&
-                !cells[newY][newX].classList.contains("wall") &&
-                !cells[newY][newX].classList.contains("destructible-wall") &&
-                !cells[newY][newX].classList.contains("enemy")
-            ) {
-                cells[enemy.y][enemy.x].classList.remove("enemy");
-                enemy.x = newX;
-                enemy.y = newY;
+                directions.forEach(dir => {
+                    const newX = enemy.x + dir.dx;
+                    const newY = enemy.y + dir.dy;
 
-                if (newX === playerPos.x && newY === playerPos.y) {
-                    gameOver();
-                } else {
-                    cells[enemy.y][enemy.x].classList.add("enemy");
+                    if (
+                        newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY &&
+                        !cells[newY][newX].classList.contains("wall") &&
+                        !cells[newY][newX].classList.contains("destructible-wall") &&
+                        !cells[newY][newX].classList.contains("enemy")
+                    ) {
+                        const distanceToPlayer = Math.abs(newX - playerPos.x) + Math.abs(newY - playerPos.y);
+                        if (distanceToPlayer < minDistance) {
+                            minDistance = distanceToPlayer;
+                            bestDirection = dir;
+                        }
+                    }
+                });
+
+                if (bestDirection) {
+                    const newX = enemy.x + bestDirection.dx;
+                    const newY = enemy.y + bestDirection.dy;
+
+                    cells[enemy.y][enemy.x].classList.remove("tudjaholvagy");
+
+                    enemy.x = newX;
+                    enemy.y = newY;
+
+                    if (newX === playerPos.x && newY === playerPos.y) {
+                        gameOver();
+                    } else {
+                        cells[enemy.y][enemy.x].classList.add("tudjaholvagy");
+                    }
+                }
+            } else if (enemy.type === "wallwalker") {
+                const newDirection = directions[Math.floor(Math.random() * directions.length)];
+                const newX = enemy .x + newDirection.dx;
+                const newY = enemy.y + newDirection.dy;
+
+                if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
+                    cells[enemy.y][enemy.x].classList.remove("wallwalker");
+                    enemy.x = newX;
+                    enemy.y = newY;
+                    cells[enemy.y][enemy.x].classList.add("wallwalker");
+
+                    if (newX === playerPos.x && newY === playerPos.y) {
+                        gameOver();
+                    }
+                }
+            } else {
+                const newDirection = directions[Math.floor(Math.random() * directions.length)];
+                const newX = enemy.x + newDirection.dx;
+                const newY = enemy.y + newDirection.dy;
+
+                if (
+                    newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY &&
+                    !cells[newY][newX].classList.contains("wall") &&
+                    !cells[newY][newX].classList.contains("destructible-wall") &&
+                    !cells[newY][newX].classList.contains("enemy")
+                ) {
+                    cells[enemy.y][enemy.x].classList.remove("enemy");
+                    enemy.x = newX;
+                    enemy.y = newY;
+
+                    if (newX === playerPos.x && newY === playerPos.y) {
+                        gameOver();
+                    } else {
+                        cells[enemy.y][enemy.x].classList.add("enemy");
+                    }
                 }
             }
         });
