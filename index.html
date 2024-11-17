@@ -289,72 +289,74 @@ function activateFreeze() {
     }
 
     function explode(x, y) {
-        const directions = [
-            { dx: 0, dy: -1 },
-            { dx: 0, dy: 1 },
-            { dx: -1, dy: 0 },
-            { dx: 1, dy: 0 },
-        ];
+    const directions = [
+        { dx: 0, dy: -1 },
+        { dx: 0, dy: 1 },
+        { dx: -1, dy: 0 },
+        { dx: 1, dy: 0 },
+    ];
 
-        cells[y][x].classList.add("explosion");
+    cells[y][x].classList.add("explosion");
 
-        let playerHit = x === playerPos.x && y === playerPos.y;
+    let playerHit = x === playerPos.x && y === playerPos.y;
 
+    directions.forEach(dir => {
+        for (let i = 0; i <= explosionRange; i++) {
+            const newX = x + dir.dx * i;
+            const newY = y + dir.dy * i;
+
+            if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
+                const cell = cells[newY][newX];
+
+                if (cell.classList.contains("wall")) break;
+                if (cell.classList.contains("destructible-wall")) {
+                    cell.classList.remove("destructible-wall");
+                    cell.classList.add("explosion");
+
+                    if (cell.classList.contains("exit-hidden")) {
+                        cell.classList.remove("exit-hidden");
+                        cell.classList.add("exit");
+                    } else if (cell.classList.contains("powerup-hidden")) {
+                        cell.classList.remove("powerup-hidden");
+                        cell.classList.add("powerup");
+                    }
+                    break;
+                }
+
+                // Ellenségek eltávolítása robbanáskor
+                if (cell.classList.contains("enemy") || cell.classList.contains("tudjaholvagy") || cell.classList.contains("wallwalker")) {
+                    cell.classList.remove("enemy", "tudjaholvagy", "wallwalker");
+                    enemies = enemies.filter(enemy => !(enemy.x === newX && enemy.y === newY));
+                }
+
+                cell.classList.add("explosion");
+
+                if (newX === playerPos.x && newY === playerPos.y) {
+                    playerHit = true;
+                }
+            }
+        }
+    });
+
+    if (playerHit) {
+        gameOver();
+    }
+
+    setTimeout(() => {
+        cells[y][x].classList.remove("explosion");
         directions.forEach(dir => {
-            for (let i = 1; i <= explosionRange; i++) {
+            for (let i = 0; i <= explosionRange; i++) {
                 const newX = x + dir.dx * i;
                 const newY = y + dir.dy * i;
 
                 if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
-                    const cell = cells[newY][newX];
-
-                    if (cell.classList.contains("wall")) break;
-                    if (cell.classList.contains("destructible-wall")) {
-                        cell.classList.remove("destructible-wall");
-                        cell.classList.add("explosion");
-
-                        if (cell.classList.contains("exit-hidden")) {
-                            cell.classList.remove("exit-hidden");
-                            cell.classList.add("exit");
-                        } else if (cell.classList.contains("powerup-hidden")) {
-                            cell.classList.remove("powerup-hidden");
-                            cell.classList.add("powerup");
-                        }
-                        break;
-                    }
-
-                    if (cell.classList.contains("enemy")) {
-                        cell.classList.remove("enemy");
-                        enemies = enemies.filter(enemy => !(enemy.x === newX && enemy.y === newY));
-                    }
-
-                    cell.classList.add("explosion");
-
-                    if (newX === playerPos.x && newY === playerPos.y) {
-                        playerHit = true;
-                    }
+                    cells[newY][newX].classList.remove("explosion");
                 }
             }
         });
+    }, 1000);
+}
 
-        if (playerHit) {
-            gameOver();
-        }
-
-        setTimeout(() => {
-            cells[y][x].classList.remove("explosion");
-            directions.forEach(dir => {
-                for (let i = 1; i <= explosionRange; i++) {
-                    const newX = x + dir.dx * i;
-                    const newY = y + dir.dy * i;
-
-                    if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
-                        cells[newY][newX].classList.remove("explosion");
-                    }
-                }
-            });
-        }, 1000);
-    }
 
     function increaseExplosionRange() {
         explosionRange++;
