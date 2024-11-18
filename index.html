@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selejtes-Bomberman</title>
+    <title>Bomberman-játék</title>
     <style>
         body {
             background-image: url('hater.png');
@@ -15,6 +15,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            font-family: cursive;
         }
         #gameContainer {
             padding: 20px;
@@ -31,6 +32,35 @@
             margin: 0 auto;
             border: 2px solid #333;
         }
+        #gameOver {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: none; /* Elrejtve, amíg nincs vége a játéknak */
+}
+
+#restartButton {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #c20000;
+    color: white;
+}
+
+#restartButton:hover {
+    background-color: #ff0000;
+}
+
         .cell {
             width: 40px;
             height: 40px;
@@ -88,18 +118,6 @@
             background-color: purple;
         }
         
-        #gameOver {
-            display: none;
-            text-align: center;
-            margin-top: 20px;
-        }
-        #restartButton {
-            padding: 10px 20px;
-            background-color: blue;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
 
         .tudjaholvagy {
             background-image: url('tudjaholvagy.png');
@@ -121,21 +139,86 @@
             
         }
 
+        #container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+#enemyDescriptions {
+    flex: 1;
+    background-color: rgba(240, 240, 240, 0.9);
+    padding: 20px;
+    border-right: 2px solid #ccc;
+    font-family: cursive;
+}
+#enemyDescriptions h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: cursive;
+}
+.enemy-description {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-family: cursive;
+}
+.enemy-description img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+.enemy-description span {
+    font-size: 14px;
+    color: #333;
+    font-family: cursive;
+}
+
     </style>
 </head>
 <body>
 
-<div id="gameContainer">
-    <h2 style="text-align: center;">Selejtes-Bomberman</h2>
-    <p style="text-align: center;">Mozgás: Nyílbillentyűk | Bomba: Space</p>
+    <div id="container">
+        <!-- Ellenségek leírásai -->
+        <div id="enemyDescriptions">
+            <h3>Ellenségek:</h3>
+            <div class="enemy-description">
+                <img src="alap.png" alt="Alap ellenség">
+                <span>Alap ellenség: Random módon mozog a pályán.</span>
+            </div>
+            <div class="enemy-description">
+                <img src="falonmegy.png" alt="Vakond ellenség">
+                <span>Vakond ellenség: Átmegy a falakon.</span>
+            </div>
+            <div class="enemy-description">
+                <img src="tudjaholvagy.png" alt="Csirke ellenség">
+                <span>Csirke ellenség: Tudja a játékos pozícióját és mindig felé megy.</span>
+            </div>
+            <h3>Powerupok:</h3>
+            <div class="enemy-description">
+                <img src="freeze.png" alt="Fagyasztás">
+                <span>Megfagyasztja az ellenségeket.</span>
+            </div>
+            <div class="enemy-description">
+                <img src="robbanas_plusz_1_power_up.gif" alt="Robbanás">
+                <span>Növeli a robbanás méretét.</span>
+            </div>
+        </div>
     
-    <div id="gameBoard"></div>
-
-    <div id="gameOver">
-        <h3>MEGHALTÁL!</h3>
-        <button id="restartButton">Újra</button>
+        <!-- Játék -->
+        <div id="gameContainer">
+            <h2>Bomberman-játék</h2>
+            <p>Mozgás: Nyílbillentyűk | Bomba: Space</p>
+            <div id="gameBoard"></div>
+            <div id="gameOver">
+                <h3>MEGHALTÁL!</h3>
+                <button id="restartButton">Újra</button>
+            </div>            
+        </div>
     </div>
-</div>
 
 <script>
     const gameBoard = document.getElementById("gameBoard");
