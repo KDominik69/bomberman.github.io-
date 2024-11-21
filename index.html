@@ -215,11 +215,12 @@
             </div>            
         </div>
     </div>
-
+    <audio id="laughAudio" src="nevetes.mp3"></audio>
 <script>
-    const gameBoard = document.getElementById("gameBoard");
+     const gameBoard = document.getElementById("gameBoard");
     const gameOverScreen = document.getElementById("gameOver");
     const restartButton = document.getElementById("restartButton");
+    const laughAudio = document.getElementById("laughAudio"); // Audio elem
     const gridSizeX = 20;
     const gridSizeY = 15;
     let playerPos = { x: 0, y: 0 };
@@ -559,21 +560,22 @@ function moveEnemies() {
 }
 
 function gameOver() {
-    isGameOver = true;
-    clearTimeout(shieldTimer); 
-    gameOverScreen.style.display = "block";
-}
+        isGameOver = true;
+        clearTimeout(shieldTimer); 
+        laughAudio.play(); // A nevetés lejátszása
+        gameOverScreen.style.display = "block";
+    }
 
-function restartGame() {
-    isGameOver = false;
-    bombPlaced = false;
-    explosionRange = 1;
-    shieldActive = false; 
-    startingPosition = { x: 0, y: 0 };
-    playerPos = { x: 0, y: 0 };
-    cells = generateLevel();
-    gameOverScreen.style.display = "none";
-}
+    function restartGame() {
+        isGameOver = false;
+        bombPlaced = false;
+        explosionRange = 1;
+        shieldActive = false; 
+        startingPosition = { x: 0, y: 0 };
+        playerPos = { x: 0, y: 0 };
+        cells = generateLevel();
+        gameOverScreen.style.display = "none";
+    }
 
 window.addEventListener("keydown", (e) => {
     if (isGameOver) return;
