@@ -33,33 +33,33 @@
             border: 2px solid #333;
         }
         #gameOver {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    display: none; /* Elrejtve, amíg nincs vége a játéknak */
-}
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none; 
+        }
 
-#restartButton {
-    margin-top: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    background-color: #c20000;
-    color: white;
-}
+        #restartButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #c20000;
+            color: white;
+        }
 
-#restartButton:hover {
-    background-color: #ff0000;
-}
+        #restartButton:hover {
+            background-color: #ff0000;
+        }
 
         .cell {
             width: 40px;
@@ -68,12 +68,11 @@
             position: relative;
         }
         .player {
-            background-image: url('mc_walking_down.gif');
+            background-image: url('pixil-frame-0 (11).png');
             background-size: cover;
             background-position: center;
             width: 40px;
             height: 40px;
-            
         }
         .wall {
             background-image: url('fal.png');
@@ -81,7 +80,6 @@
             background-position: center;
         }
         .destructible-wall {
-            
             background-image: url('torhetofal.png');
             background-size: cover;
             background-position: center;
@@ -101,14 +99,12 @@
             height: 40px;
         }
         .freeze-hidden {
-    background-image: url('freeze.png');
-    background-size: cover;
-    background-position: center;
-    
-}
-
+            background-image: url('freeze.png');
+            background-size: cover;
+            background-position: center;
+        }
         .exit {
-            background-image: url(' kijarat.png');
+            background-image: url('kijarat.png');
             background-size: cover;
             background-position: center;
         }
@@ -116,74 +112,69 @@
             background-image: url('robbanas_plusz_1_power_up.gif');
             background-size: cover;
             background-position: center;
-            
         }
-        
-        
+        .shield-powerup {
+            background-image: url('pajzs.png'); 
+            background-size: cover;
+            background-position: center;
+        }
         .tudjaholvagy {
             background-image: url('tudjaholvagy.png');
             background-size: cover;
             background-position: center;
-            
         }
-
         .enemy {
             background-image: url('alap.png');
             background-size: cover;
             background-position: center;
         }
-
         .wallwalker {
             background-image: url('falonmegy.png');
             background-size: cover;
             background-position: center;
-            
         }
-
         #container {
-    display: flex;
-    width: 90%;
-    max-width: 1200px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-}
-#enemyDescriptions {
-    flex: 1;
-    background-color: rgba(240, 240, 240, 0.9);
-    padding: 20px;
-    border-right: 2px solid #ccc;
-    font-family: cursive;
-}
-#enemyDescriptions h3 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-family: cursive;
-}
-.enemy-description {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    font-family: cursive;
-}
-.enemy-description img {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-}
-.enemy-description span {
-    font-size: 14px;
-    color: #333;
-    font-family: cursive;
-}
-
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        #enemyDescriptions {
+            flex: 1;
+            background-color: rgba(240, 240, 240, 0.9);
+            padding: 20px;
+            border-right: 2px solid #ccc;
+            font-family: cursive;
+        }
+        #enemyDescriptions h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: cursive;
+        }
+        .enemy-description {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-family: cursive;
+        }
+        .enemy-description img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        .enemy-description span {
+            font-size: 14px;
+            color: #333;
+            font-family: cursive;
+        }
     </style>
 </head>
 <body>
 
     <div id="container">
-        <!-- Ellenségek leírásai -->
         <div id="enemyDescriptions">
             <h3>Ellenségek:</h3>
             <div class="enemy-description">
@@ -207,9 +198,13 @@
                 <img src="robbanas_plusz_1_power_up.gif" alt="Robbanás">
                 <span>Növeli a robbanás méretét.</span>
             </div>
+            <div class="enemy-description">
+                <img src="pajzs.png" alt="Védőpajzs">
+                <span>Védelmet ad az ellenségektől és a robbanásoktól 6 másodpercig.</span>
+            </div>
         </div>
     
-        <!-- Játék -->
+      
         <div id="gameContainer">
             <h2>Bomberman-játék</h2>
             <p>Mozgás: Nyílbillentyűk | Bomba: Space</p>
@@ -235,6 +230,10 @@
     let enemies = [];
     let isFrozen = false;
     let freezeTimer;
+    let shieldActive = false;
+    let shieldTimer; 
+   
+    
 
     function generateLevel() {
     gameBoard.innerHTML = "";
@@ -256,6 +255,9 @@
                 }
             } else if (Math.random() < 0.3) {
                 cell.classList.add("destructible-wall");
+                if (Math.random() < 0.05) {
+                    cell.classList.add("shield-powerup-hidden");
+                }
             } else if (Math.random() < 0.05) {
                 cell.classList.add("enemy");
                 enemies.push({ x: j, y: i, type: "default" });
@@ -272,109 +274,128 @@
         }
     }
 
-    let exitPlaced = false;
-    let powerupCount = 0;
+        let exitPlaced = false;
+        let powerupCount = 0;
 
-    while (!exitPlaced || powerupCount < 3) {
-        const randomX = Math.floor(Math.random() * gridSizeX);
-        const randomY = Math.floor(Math.random() * gridSizeY);
+        while (!exitPlaced || powerupCount < 3) {
+            const randomX = Math.floor(Math.random() * gridSizeX);
+            const randomY = Math.floor(Math.random() * gridSizeY);
 
-        if (!exitPlaced && cells[randomY][randomX].classList.contains("destructible-wall")) {
-            cells[randomY][randomX].classList.add("exit-hidden");
-            exitPlaced = true;
-        }
-
-        if (powerupCount < 3 && cells[randomY][randomX].classList.contains("destructible-wall") && !cells[randomY][randomX].classList.contains("exit-hidden")) {
-            if (Math.random() < 0.5) {
-                cells[randomY][randomX].classList.add("powerup-hidden");
-            } else {
-                cells[randomY][randomX].classList.add("freeze-hidden");
+            if (!exitPlaced && cells[randomY][randomX].classList.contains("destructible-wall")) {
+                cells[randomY][randomX].classList.add("exit-hidden");
+                exitPlaced = true;
             }
-            powerupCount++;
-        }
-    }
 
-    return cells;
-}
+            if (powerupCount < 3 && cells[randomY][randomX].classList.contains("destructible-wall") && !cells[randomY][randomX].classList.contains("exit-hidden")) {
+                if (Math.random() < 0.5) {
+                    cells[randomY][randomX].classList.add("powerup-hidden");
+                } else {
+                    cells[randomY][randomX].classList.add("freeze-hidden");
+                }
+                powerupCount++;
+            }
+        }
+
+        return cells;
+    }
 
     let cells = generateLevel();
 
     function movePlayer(dx, dy) {
-    if (isGameOver) return;
+        if (isGameOver) return;
 
-    const newX = playerPos.x + dx;
-    const newY = playerPos.y + dy;
+        const newX = playerPos.x + dx;
+        const newY = playerPos.y + dy;
 
-    if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
-        const targetCell = cells[newY][newX];
-        if (!targetCell.classList.contains("wall") && !targetCell.classList.contains("destructible-wall") && !targetCell.classList.contains("enemy")) {
-            cells[playerPos.y][playerPos.x].classList.remove("player");
-            playerPos.x = newX;
-            playerPos.y = newY;
-            cells[playerPos.y][playerPos.x].classList.add("player");
+        if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
+            const targetCell = cells[newY][newX];
+            if (!targetCell.classList.contains("wall") && 
+                !targetCell.classList.contains("destructible-wall") && 
+                !targetCell.classList.contains("enemy") &&
+                !targetCell.classList.contains("tudjaholvagy") && 
+                !targetCell.classList.contains("wallwalker")) {
+                
+                cells[playerPos.y][playerPos.x].classList.remove("player");
+                playerPos.x = newX;
+                playerPos.y = newY;
+                cells[playerPos.y][playerPos.x].classList.add("player");
 
-            if (targetCell.classList.contains("exit")) { // Javított verzió
-    alert("Tovább a következő pályára!");
-    startingPosition = { x: playerPos.x, y: playerPos.y };
-    cells = generateLevel();
-}
+                if (targetCell.classList.contains("exit")) {
+                    alert("Tovább a következő pályára!");
+                    startingPosition = { x: playerPos.x, y: playerPos.y };
+                    cells = generateLevel();
+                }
 
+                if (targetCell.classList.contains("powerup")) {
+                    targetCell.classList.remove("powerup");
+                    increaseExplosionRange();
+                }
 
-            if (targetCell.classList.contains("powerup")) {
-                targetCell.classList.remove("powerup");
-                increaseExplosionRange();
-            }
+                if (targetCell.classList.contains("freeze-hidden")) {
+                    targetCell.classList.remove("freeze-hidden");
+                    activateFreeze();
+                }
 
-            if (targetCell.classList.contains("freeze-hidden")) {
-                targetCell.classList.remove("freeze-hidden");
-                activateFreeze();
-            }
+                if (targetCell.classList.contains("shield-powerup")) {
+                    targetCell.classList.remove("shield-powerup");
+                    activateShield();
+                }
 
-            if (targetCell.classList.contains("explosion")) {
-                gameOver();
-            }
+                if (targetCell.classList.contains("explosion")) {
+                    if (!shieldActive) {
+                        gameOver();
+                    }
+                }
+            
         }
     }
 }
 
+function activateShield() {
+    shieldActive = true;
+    shieldTimer = setTimeout(() => {
+        shieldActive = false;
+    }, 6000);
+}
+
 function activateFreeze() {
     isFrozen = true;
-    // Az ellenségek nem tűnnek el, de most már fagyott állapotban maradnak
     enemies.forEach(enemy => {
-        // Ha az ellenség fagyott, akkor nem mozdul el
-        cells[enemy.y][enemy.x].classList.add("frozen"); // Esetleg fagyott osztályt adhatsz hozzá
+        cells[enemy.y][enemy.x].classList.add("frozen");
     });
 
     freezeTimer = setTimeout(() => {
         isFrozen = false;
         enemies.forEach(enemy => {
-            cells[enemy.y][enemy.x].classList.remove("frozen"); // Eltávolítod a fagyott osztályt
+            cells[enemy.y][enemy.x].classList.remove("frozen");
         });
-    }, 5000);
+    }, 6000);
 }
 
-    function placeBomb() {
-        if (bombPlaced || isGameOver) return;
+function placeBomb() {
+    if (bombPlaced || isGameOver) return;
 
-        const bombX = playerPos.x;
-        const bombY = playerPos.y;
-        cells[bombY][bombX].classList.add("bomb");
-        bombPlaced = true;
+    const bombX = playerPos.x;
+    const bombY = playerPos.y;
+    cells[bombY][bombX].classList.add("bomb");
+    bombPlaced = true;
 
-        setTimeout(() => {
-            cells[bombY][bombX].classList.remove("bomb");
+    setTimeout(() => {
+        cells[bombY][bombX].classList.remove("bomb");
 
-            if (bombX === playerPos .x && bombY === playerPos.y) {
+        if (bombX === playerPos.x && bombY === playerPos.y) {
+            if (!shieldActive) {
                 gameOver();
-            } else {
-                explode(bombX, bombY);
             }
+        } else {
+            explode(bombX, bombY);
+        }
 
-            bombPlaced = false;
-        }, 2000);
-    }
+        bombPlaced = false;
+    }, 2000);
+}
 
-    function explode(x, y) {
+function explode(x, y) {
     const directions = [
         { dx: 0, dy: -1 },
         { dx: 0, dy: 1 },
@@ -397,19 +418,13 @@ function activateFreeze() {
                 if (cell.classList.contains("wall")) break;
                 if (cell.classList.contains("destructible-wall")) {
                     cell.classList.remove("destructible-wall");
-                    cell.classList.add("explosion");
-
-                    if (cell.classList.contains("exit-hidden")) {
-                        cell.classList.remove("exit-hidden");
-                        cell.classList.add("exit");
-                    } else if (cell.classList.contains("powerup-hidden")) {
-                        cell.classList.remove("powerup-hidden");
-                        cell.classList.add("powerup");
+                    if (cell.classList.contains("shield-powerup-hidden")) {
+                        cell.classList.remove("shield-powerup-hidden");
+                        cell.classList.add("shield-powerup");
                     }
                     break;
                 }
 
-                // Ellenségek eltávolítása robbanáskor
                 if (cell.classList.contains("enemy") || cell.classList.contains("tudjaholvagy") || cell.classList.contains("wallwalker")) {
                     cell.classList.remove("enemy", "tudjaholvagy", "wallwalker");
                     enemies = enemies.filter(enemy => !(enemy.x === newX && enemy.y === newY));
@@ -418,7 +433,9 @@ function activateFreeze() {
                 cell.classList.add("explosion");
 
                 if (newX === playerPos.x && newY === playerPos.y) {
-                    playerHit = true;
+                    if (!shieldActive) {
+                        playerHit = true;
+                    }
                 }
             }
         }
@@ -443,18 +460,12 @@ function activateFreeze() {
     }, 1000);
 }
 
-
-    function increaseExplosionRange() {
-        explosionRange++;
-    }
-
-    function moveEnemies() {
+function moveEnemies() {
     if (isGameOver || isFrozen) return;
 
     enemies.forEach((enemy) => {
-        // Ellenőrizzük, hogy az ellenség fagyott-e
         if (cells[enemy.y][enemy.x].classList.contains("frozen")) {
-            return; // Ha fagyott, ne mozduljon el
+            return; 
         }
 
         const directions = [
@@ -469,7 +480,7 @@ function activateFreeze() {
             let minDistance = Infinity;
 
             directions.forEach(dir => {
-                const newX = enemy.x + dir.dx;
+                const newX = enemy .x + dir.dx;
                 const newY = enemy.y + dir.dy;
 
                 if (
@@ -496,7 +507,9 @@ function activateFreeze() {
                 enemy.y = newY;
 
                 if (newX === playerPos.x && newY === playerPos.y) {
-                    gameOver();
+                    if (!shieldActive) {
+                        gameOver();
+                    }
                 } else {
                     cells[enemy.y][enemy.x].classList.add("tudjaholvagy");
                 }
@@ -513,7 +526,9 @@ function activateFreeze() {
                 cells[enemy.y][enemy.x].classList.add("wallwalker");
 
                 if (newX === playerPos.x && newY === playerPos.y) {
-                    gameOver();
+                    if (!shieldActive) {
+                        gameOver();
+                    }
                 }
             }
         } else {
@@ -527,12 +542,14 @@ function activateFreeze() {
                 !cells[newY][newX].classList.contains("destructible-wall") &&
                 !cells[newY][newX].classList.contains("enemy")
             ) {
- cells[enemy.y][enemy.x].classList.remove("enemy");
+                cells[enemy.y][enemy.x].classList.remove("enemy");
                 enemy.x = newX;
                 enemy.y = newY;
 
                 if (newX === playerPos.x && newY === playerPos.y) {
-                    gameOver();
+                    if (!shieldActive) {
+                        gameOver();
+                    }
                 } else {
                     cells[enemy.y][enemy.x].classList.add("enemy");
                 }
@@ -541,22 +558,24 @@ function activateFreeze() {
     });
 }
 
-    function gameOver() {
-        isGameOver = true;
-        gameOverScreen.style.display = "block";
-    }
+function gameOver() {
+    isGameOver = true;
+    clearTimeout(shieldTimer); 
+    gameOverScreen.style.display = "block";
+}
 
-    function restartGame() {
-        isGameOver = false;
-        bombPlaced = false;
-        explosionRange = 1;
-        startingPosition = { x: 0, y: 0 };
-        playerPos = { x: 0, y: 0 };
-        cells = generateLevel();
-        gameOverScreen.style.display = "none";
-    }
+function restartGame() {
+    isGameOver = false;
+    bombPlaced = false;
+    explosionRange = 1;
+    shieldActive = false; 
+    startingPosition = { x: 0, y: 0 };
+    playerPos = { x: 0, y: 0 };
+    cells = generateLevel();
+    gameOverScreen.style.display = "none";
+}
 
-    window.addEventListener("keydown", (e) => {
+window.addEventListener("keydown", (e) => {
     if (isGameOver) return;
 
     switch (e.key) {
@@ -582,8 +601,8 @@ function activateFreeze() {
     }
 });
 
-    restartButton.addEventListener("click", restartGame);
-    setInterval(moveEnemies, 1000);
+restartButton.addEventListener("click", restartGame);
+setInterval(moveEnemies, 1000);
 </script>
 
 </body>
