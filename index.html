@@ -182,13 +182,92 @@
             font-weight:bolder;
         }
 
+        #tortenetGomb {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
+        #tortenetGomb:hover {
+            background-color: #0056b3;
+        }
+
+        #tortenet {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none; 
+            z-index: 1000;
+            text-align: center;
+            width: 300px;
+        }
+
+        #tortenet h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.5em;
+        }
+
+        #tortenet p {
+            margin: 15px 0;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        #tortenet .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            color: white;
+        }
+
+        #tortenet .close:hover {
+            color: red;
+        }
+
+        #backgroundOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
 
 
     </style>
 </head>
 <body>
+   
+    <button id="tortenetGomb">Történet</button>
 
+    <div id="backgroundOverlay"></div>
+    
+    <div id="tortenet">
+        <button class="close">&times;</button>
+        <h3>Történet</h3>
+        <p>Hősünket a gonosz JG-varázsló egy véget nem érő, szörnyekkel teli labirintusba varázsolta, hogy szórakoztassa. JG power-upokat rejtett el, amelyeket hősünk varázskontaktlencséjének köszönhetően látt. Hősünk célja az, hogy valahogy kijusson (spoiler: nem fog), és megölje a gonosz JG boszorkát. Hősünk különleges képessége az, hogy végtelen számú bombát tud lerakni, de egyszerre csak egyet. Ez azonban elég gyenge az ellenségekre, mivel csak a robbanás pillanatában van halálos hatással, de hősünkre mindig.</p>
+    </div>
+
+    </div>
     <div id="container">
         <div id="enemyDescriptions">
             <h3>Ellenségek:</h3>
@@ -207,16 +286,26 @@
             <h3>Powerupok:</h3>
             <div class="enemy-description">
                 <img src="freeze.png" alt="Fagyasztás">
-                <span>Megfagyasztja az ellenségeket 6 másodpercig.("Falmögött van")</span>
+                <span>Megfagyasztja az ellenségeket 6 másodpercig..("Falmögött van")</span>
             </div>
             <div class="enemy-description">
                 <img src="robbanas_plusz_1_power_up.gif" alt="Robbanás">
-                <span>Növeli a robbanás méretét.("Falmögött van")</span>
+                <span>Növeli a robbanás méretét..("Falmögött van")</span>
             </div>
             <div class="enemy-description">
                 <img src="pajzs.png" alt="Védőpajzs">
-                <span>Védelmet ad az ellenségektől és a robbanásoktól 6 másodpercig.("Falmögött van")</span>
+                <span>Védelmet ad az ellenségektől és a robbanásoktól 6 másodpercig..("Falmögött van")</span>
             </div>
+            <h3>Egyebek:</h3>
+            <div class="enemy-description">
+                <img src="kijarat.png" alt="Kijárat">
+                <span>Kijárat: ENNYI semmi több.</span>
+            </div>
+            <div class="enemy-description">
+                <img src="pixil-frame-0 (8).png" alt="Játékos">
+                <span>Játékös: története a történet gombra kattintva olvasható.</span>
+            </div>
+           
         </div>
     
       
@@ -233,6 +322,27 @@
     </div>
     <audio id="laughAudio" src="cj.mp3"></audio>
 <script>
+
+const gomb = document.getElementById('tortenetGomb');
+    const tortenetDoboz = document.getElementById('tortenet');
+    const backgroundOverlay = document.getElementById('backgroundOverlay');
+    const closeBtn = document.querySelector('#tortenet .close');
+
+    gomb.addEventListener('click', () => {
+        backgroundOverlay.style.display = 'block';
+        tortenetDoboz.style.display = 'block';
+    });
+
+    closeBtn.addEventListener('click', () => {
+        backgroundOverlay.style.display = 'none';
+        tortenetDoboz.style.display = 'none';
+    });
+
+    backgroundOverlay.addEventListener('click', () => {
+        backgroundOverlay.style.display = 'none';
+        tortenetDoboz.style.display = 'none';
+    });
+
      const gameBoard = document.getElementById("gameBoard");
 const gameOverScreen = document.getElementById("gameOver");
 const restartButton = document.getElementById("restartButton");
