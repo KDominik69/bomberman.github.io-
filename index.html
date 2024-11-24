@@ -16,12 +16,16 @@
             align-items: center;
             height: 100vh;
             font-family: cursive;
+           
         }
         #gameContainer {
             padding: 20px;
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            padding-bottom: 40px;
+            padding-right: 60px;
+            padding-top: 0px;
         }
         #gameBoard {
             display: grid;
@@ -31,6 +35,8 @@
             width: 840px;
             margin: 0 auto;
             border: 2px solid #333;
+            transform: perspective(500px) rotateX(11deg);
+            
         }
         #gameOver {
             position: absolute;
@@ -44,6 +50,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             display: none; 
+            
         }
 
         #restartButton {
@@ -73,6 +80,7 @@
             background-position: center;
             width: 40px;
             height: 40px;
+            
         }
         .wall {
             background-image: url('fal.png');
@@ -170,6 +178,10 @@
             color: #333;
             font-family: cursive;
         }
+
+
+
+
     </style>
 </head>
 <body>
