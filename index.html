@@ -215,28 +215,26 @@
             </div>            
         </div>
     </div>
-    <audio id="laughAudio" src="nevetes.mp3"></audio>
+    <audio id="laughAudio" src="cj.mp3"></audio>
 <script>
      const gameBoard = document.getElementById("gameBoard");
-    const gameOverScreen = document.getElementById("gameOver");
-    const restartButton = document.getElementById("restartButton");
-    const laughAudio = document.getElementById("laughAudio"); // Audio elem
-    const gridSizeX = 20;
-    const gridSizeY = 15;
-    let playerPos = { x: 0, y: 0 };
-    let startingPosition = { x: 0, y: 0 };
-    let explosionRange = 1;
-    let bombPlaced = false;
-    let isGameOver = false;
-    let enemies = [];
-    let isFrozen = false;
-    let freezeTimer;
-    let shieldActive = false;
-    let shieldTimer; 
-   
-    
+const gameOverScreen = document.getElementById("gameOver");
+const restartButton = document.getElementById("restartButton");
+const laughAudio = document.getElementById("laughAudio"); 
+const gridSizeX = 20;
+const gridSizeY = 15;
+let playerPos = { x: 0, y: 0 };
+let startingPosition = { x: 0, y: 0 };
+let explosionRange = 1;
+let bombPlaced = false;
+let isGameOver = false;
+let enemies = [];
+let isFrozen = false;
+let freezeTimer;
+let shieldActive = false;
+let shieldTimer; 
 
-    function generateLevel() {
+function generateLevel() {
     gameBoard.innerHTML = "";
     const cells = [];
     enemies = [];
@@ -256,9 +254,6 @@
                 }
             } else if (Math.random() < 0.3) {
                 cell.classList.add("destructible-wall");
-                if (Math.random() < 0.05) {
-                    cell.classList.add("shield-powerup-hidden");
-                }
             } else if (Math.random() < 0.05) {
                 cell.classList.add("enemy");
                 enemies.push({ x: j, y: i, type: "default" });
@@ -275,79 +270,95 @@
         }
     }
 
-        let exitPlaced = false;
-        let powerupCount = 0;
 
-        while (!exitPlaced || powerupCount < 3) {
-            const randomX = Math.floor(Math.random() * gridSizeX);
-            const randomY = Math.floor(Math.random() * gridSizeY);
+    let exitPlaced = false;
+    while (!exitPlaced) {
+        const randomX = Math.floor(Math.random() * gridSizeX);
+        const randomY = Math.floor(Math.random() * gridSizeY);
 
-            if (!exitPlaced && cells[randomY][randomX].classList.contains("destructible-wall")) {
-                cells[randomY][randomX].classList.add("exit-hidden");
-                exitPlaced = true;
-            }
-
-            if (powerupCount < 3 && cells[randomY][randomX].classList.contains("destructible-wall") && !cells[randomY][randomX].classList.contains("exit-hidden")) {
-                if (Math.random() < 0.5) {
-                    cells[randomY][randomX].classList.add("powerup-hidden");
-                } else {
-                    cells[randomY][randomX].classList.add("freeze-hidden");
-                }
-                powerupCount++;
-            }
+      
+        if (cells[randomY][randomX].classList.length === 1) { 
+            cells[randomY][randomX].classList.add("exit");
+            exitPlaced = true;
         }
-
-        return cells;
     }
 
-    let cells = generateLevel();
+    let powerupCount = 0;
+    while (powerupCount < 3) {
+        const randomX = Math.floor(Math.random() * gridSizeX);
+        const randomY = Math.floor(Math.random() * gridSizeY);
 
-    function movePlayer(dx, dy) {
-        if (isGameOver) return;
 
-        const newX = playerPos.x + dx;
-        const newY = playerPos.y + dy;
+        if (cells[randomY][randomX].classList.contains("destructible-wall") && 
+            !cells[randomY][randomX].classList.contains("exit")) {
+            const powerupType = Math.random();
+            if (powerupType < 0.5) {
+                cells[randomY][randomX].classList.add("powerup");
+            } else if (powerupType < 0.8) {
+                cells[randomY][randomX].classList.add("freeze-hidden");
+            } else {
+                cells[randomY][randomX].classList.add("shield-powerup"); 
+            }
+            powerupCount++;
+        }
+    }
 
-        if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
-            const targetCell = cells[newY][newX];
-            if (!targetCell.classList.contains("wall") && 
-                !targetCell.classList.contains("destructible-wall") && 
-                !targetCell.classList.contains("enemy") &&
-                !targetCell.classList.contains("tudjaholvagy") && 
-                !targetCell.classList.contains("wallwalker")) {
-                
-                cells[playerPos.y][playerPos.x].classList.remove("player");
-                playerPos.x = newX;
-                playerPos.y = newY;
-                cells[playerPos.y][playerPos.x].classList.add("player");
+    return cells;
+}
 
-                if (targetCell.classList.contains("exit")) {
-                    alert("Tovább a következő pályára!");
-                    startingPosition = { x: playerPos.x, y: playerPos.y };
-                    cells = generateLevel();
-                }
+let cells = generateLevel();
 
-                if (targetCell.classList.contains("powerup")) {
-                    targetCell.classList.remove("powerup");
-                    increaseExplosionRange();
-                }
+function movePlayer(dx, dy) {
+    if (isGameOver) return;
 
-                if (targetCell.classList.contains("freeze-hidden")) {
-                    targetCell.classList.remove("freeze-hidden");
-                    activateFreeze();
-                }
+    const newX = playerPos.x + dx;
+    const newY = playerPos.y + dy;
 
-                if (targetCell.classList.contains("shield-powerup")) {
-                    targetCell.classList.remove("shield-powerup");
-                    activateShield();
-                }
-
-                if (targetCell.classList.contains("explosion")) {
-                    if (!shieldActive) {
-                        gameOver();
-                    }
-                }
+    if (newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY) {
+        const targetCell = cells[newY][newX];
+        if (!targetCell.classList.contains("wall") && 
+            !targetCell.classList.contains("destructible-wall") && 
+            !targetCell.classList.contains("enemy") &&
+            !targetCell.classList.contains("tudjaholvagy") && 
+            !targetCell.classList.contains("wallwalker")) {
             
+            cells[playerPos.y][playerPos.x].classList.remove("player");
+            playerPos.x = newX;
+            playerPos.y = newY;
+            cells[playerPos.y][playerPos.x].classList.add("player");
+
+            // Kijárat elérése
+            if (targetCell.classList.contains("exit")) {
+                alert("Tovább a következő pályára!");
+                startingPosition = { x: playerPos.x, y: playerPos.y };
+                cells = generateLevel();
+            }
+
+            // Powerup felvétele
+            if (targetCell.classList.contains("powerup")) {
+                targetCell.classList.remove("powerup");
+                explosionRange += 1; // Növeljük a robbanás méretét
+                alert(`Robbanás mérete megnövelve: ${explosionRange}`);
+            }
+
+            // Fagyasztó powerup felvétele
+            if (targetCell.classList.contains("freeze-hidden")) {
+                targetCell.classList.remove("freeze-hidden");
+                activateFreeze();
+            }
+
+            // Pajzs powerup felvétele
+            if (targetCell.classList.contains("shield-powerup")) {
+                targetCell.classList.remove("shield-powerup");
+                activateShield();
+            }
+
+            // Robbanás elérése
+            if (targetCell.classList.contains("explosion")) {
+                if (!shieldActive) {
+                    gameOver();
+                }
+            }
         }
     }
 }
@@ -356,6 +367,7 @@ function activateShield() {
     shieldActive = true;
     shieldTimer = setTimeout(() => {
         shieldActive = false;
+        alert("A pajzs hatása véget ért!");
     }, 6000);
 }
 
@@ -419,10 +431,6 @@ function explode(x, y) {
                 if (cell.classList.contains("wall")) break;
                 if (cell.classList.contains("destructible-wall")) {
                     cell.classList.remove("destructible-wall");
-                    if (cell.classList.contains("shield-powerup-hidden")) {
-                        cell.classList.remove("shield-powerup-hidden");
-                        cell.classList.add("shield-powerup");
-                    }
                     break;
                 }
 
@@ -442,7 +450,7 @@ function explode(x, y) {
         }
     });
 
-    if (playerHit) {
+    if ( playerHit) {
         gameOver();
     }
 
@@ -481,7 +489,7 @@ function moveEnemies() {
             let minDistance = Infinity;
 
             directions.forEach(dir => {
-                const newX = enemy .x + dir.dx;
+                const newX = enemy.x + dir.dx;
                 const newY = enemy.y + dir.dy;
 
                 if (
@@ -560,22 +568,22 @@ function moveEnemies() {
 }
 
 function gameOver() {
-        isGameOver = true;
-        clearTimeout(shieldTimer); 
-        laughAudio.play(); // A nevetés lejátszása
-        gameOverScreen.style.display = "block";
-    }
+    isGameOver = true;
+    clearTimeout(shieldTimer); 
+    laughAudio.play(); 
+    gameOverScreen.style.display = "block";
+}
 
-    function restartGame() {
-        isGameOver = false;
-        bombPlaced = false;
-        explosionRange = 1;
-        shieldActive = false; 
-        startingPosition = { x: 0, y: 0 };
-        playerPos = { x: 0, y: 0 };
-        cells = generateLevel();
-        gameOverScreen.style.display = "none";
-    }
+function restartGame() {
+    isGameOver = false;
+    bombPlaced = false;
+    explosionRange = 1;
+    shieldActive = false; 
+    startingPosition = { x: 0, y: 0 };
+    playerPos = { x: 0, y: 0 };
+    cells = generateLevel();
+    gameOverScreen.style.display = "none";
+}
 
 window.addEventListener("keydown", (e) => {
     if (isGameOver) return;
