@@ -16,7 +16,6 @@
             align-items: center;
             height: 100vh;
             font-family: cursive;
-           
         }
         #gameContainer {
             padding: 20px;
@@ -71,11 +70,12 @@
         .cell {
             width: 40px;
             height: 40px;
+            background-color: white;
             background-color: #ddd;
             position: relative;
         }
         .player {
-            background-image: url('pixil-frame-0 (11).png');
+            background-image: url('pixil-frame-0 (8).png');
             background-size: cover;
             background-position: center;
             width: 40px;
@@ -145,16 +145,17 @@
             display: flex;
             width: 90%;
             max-width: 1200px;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0);
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.262);
             overflow: hidden;
         }
         #enemyDescriptions {
             flex: 1;
-            background-color: rgba(240, 240, 240, 0.9);
+            background-color: rgba(240, 240, 240, 0.325);
             padding: 20px;
             border-right: 2px solid #ccc;
+          
             font-family: cursive;
         }
         #enemyDescriptions h3 {
@@ -167,6 +168,7 @@
             align-items: center;
             margin-bottom: 15px;
             font-family: cursive;
+            
         }
         .enemy-description img {
             width: 50px;
@@ -175,8 +177,9 @@
         }
         .enemy-description span {
             font-size: 14px;
-            color: #333;
+            color: #000000;
             font-family: cursive;
+            font-weight:bolder;
         }
 
 
@@ -220,6 +223,7 @@
         <div id="gameContainer">
             <h2>Bomberman-játék</h2>
             <p>Mozgás: Nyílbillentyűk és WASD | Bomba: Space</p>
+            <p>(Bugot tapasztal írjon ide:kmetzdominik69@gmail.com 2030-ra "javítjuk")</p>
             <div id="gameBoard"></div>
             <div id="gameOver">
                 <h3>MEGHALTÁL!</h3>
@@ -246,41 +250,60 @@ let freezeTimer;
 let shieldActive = false;
 let shieldTimer; 
 
-function generateLevel() {
-    gameBoard.innerHTML = "";
-    const cells = [];
-    enemies = [];
+function setRandomBackground() {
+        const randomNum = Math.floor(Math.random() * 3) + 1; // 1-3 között
+        let backgroundImage;
 
-    for (let i = 0; i < gridSizeY; i++) {
-        cells[i] = [];
-        for (let j = 0; j < gridSizeX; j++) {
-            const cell = document.createElement("div");
-            cell.classList.add("cell");
-
-            if (i === startingPosition.y && j === startingPosition.x) {
-                cell.classList.add("player");
-                playerPos = { x: startingPosition.x, y: startingPosition.y };
-            } else if (i % 2 === 0 && j % 2 === 0) {
-                if (!((i === 2 && j === 0) || (i === 0 && j === 2))) {
-                    cell.classList.add("wall");
-                }
-            } else if (Math.random() < 0.3) {
-                cell.classList.add("destructible-wall");
-            } else if (Math.random() < 0.05) {
-                cell.classList.add("enemy");
-                enemies.push({ x: j, y: i, type: "default" });
-            } else if (Math.random() < 0.02) {
-                cell.classList.add("tudjaholvagy");
-                enemies.push({ x: j, y: i, type: "tudjaholvagy" });
-            } else if (Math.random() < 0.01) {
-                cell.classList.add("wallwalker");
-                enemies.push({ x: j, y: i, type: "wallwalker" });
-            }
-
-            cells[i][j] = cell;
-            gameBoard.appendChild(cell);
+        switch (randomNum) {
+            case 1:
+                backgroundImage = 'teli.png';
+                break;
+            case 2:
+                backgroundImage = 'pokol.png';
+                break;
+            case 3:
+                backgroundImage = 'erdo.png';
+                break;
         }
+
+        document.body.style.backgroundImage = `url('${backgroundImage}')`;
     }
+
+function generateLevel() {
+        gameBoard.innerHTML = "";
+        const cells = [];
+        enemies = [];
+
+        for (let i =  0; i < gridSizeY; i++) {
+            cells[i] = [];
+            for (let j = 0; j < gridSizeX; j++) {
+                const cell = document.createElement("div");
+                cell.classList.add("cell");
+
+                if (i === startingPosition.y && j === startingPosition.x) {
+                    cell.classList.add("player");
+                    playerPos = { x: startingPosition.x, y: startingPosition.y };
+                } else if (i % 2 === 0 && j % 2 === 0) {
+                    if (!((i === 2 && j === 0) || (i === 0 && j === 2))) {
+                        cell.classList.add("wall");
+                    }
+                } else if (Math.random() < 0.3) {
+                    cell.classList.add("destructible-wall");
+                } else if (Math.random() < 0.05) {
+                    cell.classList.add("enemy");
+                    enemies.push({ x: j, y: i, type: "default" });
+                } else if (Math.random() < 0.02) {
+                    cell.classList.add("tudjaholvagy");
+                    enemies.push({ x: j, y: i, type: "tudjaholvagy" });
+                } else if (Math.random() < 0.01) {
+                    cell.classList.add("wallwalker");
+                    enemies.push({ x: j, y: i, type: "wallwalker" });
+                }
+
+                cells[i][j] = cell;
+                gameBoard.appendChild(cell);
+            }
+        }
 
 
     let exitPlaced = false;
@@ -315,7 +338,9 @@ function generateLevel() {
         }
     }
 
-    return cells;
+    setRandomBackground(); // Háttérkép beállítása
+
+return cells;
 }
 
 let cells = generateLevel();
@@ -587,15 +612,15 @@ function gameOver() {
 }
 
 function restartGame() {
-    isGameOver = false;
-    bombPlaced = false;
-    explosionRange = 1;
-    shieldActive = false; 
-    startingPosition = { x: 0, y: 0 };
-    playerPos = { x: 0, y: 0 };
-    cells = generateLevel();
-    gameOverScreen.style.display = "none";
-}
+        isGameOver = false;
+        bombPlaced = false;
+        explosionRange = 1;
+        shieldActive = false; 
+        startingPosition = { x: 0, y: 0 };
+        playerPos = { x: 0, y: 0 };
+        cells = generateLevel(); // Háttérkép beállítása
+        gameOverScreen.style.display = "none";
+    }
 
 window.addEventListener("keydown", (e) => {
     if (isGameOver) return;
