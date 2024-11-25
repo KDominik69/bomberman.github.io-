@@ -379,49 +379,68 @@ function setRandomBackground() {
         document.body.style.backgroundImage = `url('${backgroundImage}')`;
     }
 
-function generateLevel() {
-        gameBoard.innerHTML = "";
-        const cells = [];
-        enemies = [];
+    function generateLevel() {
+    gameBoard.innerHTML = "";
+    const cells = [];
+    enemies = [];
 
-        for (let i =  0; i < gridSizeY; i++) {
-            cells[i] = [];
-            for (let j = 0; j < gridSizeX; j++) {
-                const cell = document.createElement("div");
-                cell.classList.add("cell");
+    // Játékos körüli 3x3-as terület
+    const playerArea = [
+        { x: playerPos.x - 1, y: playerPos.y - 1 },
+        { x: playerPos.x - 1, y: playerPos.y },
+        { x: playerPos.x - 1, y: playerPos.y + 1 },
+        { x: playerPos.x, y: playerPos.y - 1 },
+        { x: playerPos.x, y: playerPos.y },
+        { x: playerPos.x, y: playerPos.y + 1 },
+        { x: playerPos.x + 1, y: playerPos.y - 1 },
+        { x: playerPos.x + 1, y: playerPos.y },
+        { x: playerPos.x + 1, y: playerPos.y + 1 },
+    ];
 
-                if (i === startingPosition.y && j === startingPosition.x) {
-                    cell.classList.add("player");
-                    playerPos = { x: startingPosition.x, y: startingPosition.y };
-                } else if (i % 2 === 0 && j % 2 === 0) {
-                    if (!((i === 2 && j === 0) || (i === 0 && j === 2))) {
+    for (let i = 0; i < gridSizeY; i++) {
+        cells[i] = [];
+        for (let j = 0; j < gridSizeX; j++) {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+
+            if (i === startingPosition.y && j === startingPosition.x) {
+                cell.classList.add("player");
+                playerPos = { x: startingPosition.x, y: startingPosition.y };
+            } else if (i % 2 === 0 && j % 2 === 0) {
+                if (!((i === 2 && j === 0) || (i === 0 && j === 2))) {
+                    // Ellenőrizzük, hogy a cella a játékos körüli területen van-e
+                    const isNearPlayer = playerArea.some(pos => pos.x === j && pos.y === i);
+                    if (!isNearPlayer) {
                         cell.classList.add("wall");
                     }
-                } else if (Math.random() < 0.3) {
-                    cell.classList.add("destructible-wall");
-                } else if (Math.random() < 0.05) {
-                    cell.classList.add("enemy");
-                    enemies.push({ x: j, y: i, type: "default" });
-                } else if (Math.random() < 0.02) {
-                    cell.classList.add("tudjaholvagy");
-                    enemies.push({ x: j, y: i, type: "tudjaholvagy" });
-                } else if (Math.random() < 0.01) {
-                    cell.classList.add("wallwalker");
-                    enemies.push({ x: j, y: i, type: "wallwalker" });
                 }
-
-                cells[i][j] = cell;
-                gameBoard.appendChild(cell);
+            } else if (Math.random() < 0.3) {
+                // Ellenőrizzük, hogy a cella a játékos körüli területen van-e
+                const isNearPlayer = playerArea.some(pos => pos.x === j && pos.y === i);
+                if (!isNearPlayer) {
+                    cell.classList.add("destructible-wall");
+                }
+            } else if (Math.random() < 0.05) {
+                cell.classList.add("enemy");
+                enemies.push({ x: j, y: i, type: "default" });
+            } else if (Math.random() < 0.02) {
+                cell.classList.add("tudjaholvagy");
+                enemies.push({ x: j, y: i, type: "tudjaholvagy" });
+            } else if (Math.random() < 0.01) {
+                cell.classList.add("wallwalker");
+                enemies.push({ x: j, y: i, type: "wallwalker" });
             }
-        }
 
+            cells[i][j] = cell;
+            gameBoard.appendChild(cell);
+        }
+    }
 
     let exitPlaced = false;
     while (!exitPlaced) {
         const randomX = Math.floor(Math.random() * gridSizeX);
         const randomY = Math.floor(Math.random() * gridSizeY);
 
-      
         if (cells[randomY][randomX].classList.length === 1) { 
             cells[randomY][randomX].classList.add("exit");
             exitPlaced = true;
@@ -433,7 +452,6 @@ function generateLevel() {
         const randomX = Math.floor(Math.random() * gridSizeX);
         const randomY = Math.floor(Math.random() * gridSizeY);
 
-
         if (cells[randomY][randomX].classList.contains("destructible-wall") && 
             !cells[randomY][randomX].classList.contains("exit")) {
             const powerupType = Math.random();
@@ -442,7 +460,7 @@ function generateLevel() {
             } else if (powerupType < 0.8) {
                 cells[randomY][randomX].classList.add("freeze-hidden");
             } else {
-                cells[randomY][randomX].classList.add("shield-powerup"); 
+                cells[randomY ][randomX].classList.add("shield-powerup"); 
             }
             powerupCount++;
         }
@@ -450,7 +468,7 @@ function generateLevel() {
 
     setRandomBackground();
 
-return cells;
+    return cells;
 }
 
 let cells = generateLevel();
