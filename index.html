@@ -385,7 +385,6 @@ function setRandomBackground() {
     const cells = [];
     enemies = [];
 
-    // Játékos körüli 3x3-as terület
     const playerArea = [
         { x: playerPos.x - 1, y: playerPos.y - 1 },
         { x: playerPos.x - 1, y: playerPos.y },
@@ -408,13 +407,9 @@ function setRandomBackground() {
                 cell.classList.add("player");
                 playerPos = { x: startingPosition.x, y: startingPosition.y };
             } else if (playerArea.some(pos => pos.x === j && pos.y === i)) {
-                // Ha a cella a játékos körüli területen van, hagyjuk üresen
-                // Nem csinálunk semmit
             } else if (i % 2 === 0 && j % 2 === 0) {
-                // Csak a falakat helyezzük el, ha nem a játékos körüli területen van
                 cell.classList.add("wall");
             } else if (Math.random() < 0.3) {
-                // Véletlenszerűen helyezünk el rombolható falakat
                 cell.classList.add("destructible-wall");
             } else if (Math.random() < 0.05) {
                 cell.classList.add("enemy");
@@ -470,7 +465,7 @@ function setRandomBackground() {
 let cells = generateLevel();
 let canMove = true;
 function movePlayer(dx, dy) {
-    if (isGameOver || !canMove) return; // Ellenőrizzük, hogy a játék véget ért-e vagy a mozgás engedélyezett-e
+    if (isGameOver || !canMove) return; 
 
     const newX = playerPos.x + dx;
     const newY = playerPos.y + dy;
@@ -517,11 +512,10 @@ function movePlayer(dx, dy) {
         }
     }
 
-    // A mozgás befejezése után állítsuk vissza a mozgás engedélyezését
     canMove = false;
     setTimeout(() => {
-        canMove = true; // 250ms után újra engedélyezzük a mozgást
-    }, 250);
+        canMove = true; 
+    }, 100);
 }
 
 
@@ -659,8 +653,8 @@ function moveEnemies() {
                     !cells[newY][newX].classList.contains("wall") &&
                     !cells[newY][newX].classList.contains("destructible-wall") &&
                     !cells[newY][newX].classList.contains("enemy") &&
-                    !cells[newY][newX].classList.contains("bomb") && // Add this check
-                    !cells[newY][newX].classList.contains("explosion") // Ellenőrizzük az explosion osztályt
+                    !cells[newY][newX].classList.contains("bomb") && 
+                    !cells[newY][newX].classList.contains("explosion") 
                 ) {
                     const distanceToPlayer = Math.abs(newX - playerPos.x) + Math.abs(newY - playerPos.y);
                     if (distanceToPlayer < minDistance) {
@@ -688,7 +682,6 @@ function moveEnemies() {
                 }
             }
         } else if (enemy.type === "wallwalker") {
-            // A wallwalker ellenségek szabadon mozoghatnak
             const newDirection = directions[Math.floor(Math.random() * directions.length)];
             const newX = enemy.x + newDirection.dx;
             const newY = enemy.y + newDirection.dy;
@@ -720,8 +713,8 @@ function moveEnemies() {
                 !cells[newY][newX].classList.contains("wall") &&
                 !cells[newY][newX].classList.contains("destructible-wall") &&
                 !cells[newY][newX].classList.contains("enemy") &&
-                !cells[newY][newX].classList.contains("bomb") && // Add this check
-                !cells[newY][newX].classList.contains("explosion") // Ellenőrizzük az explosion osztályt
+                !cells[newY][newX].classList.contains("bomb") && 
+                !cells[newY][newX].classList.contains("explosion") 
             ) {
                 cells[enemy.y][enemy.x].classList.remove("enemy");
                 enemy.x = newX;
@@ -752,7 +745,7 @@ function restartGame() {
         shieldActive = false; 
         startingPosition = { x: 0, y: 0 };
         playerPos = { x: 0, y: 0 };
-        cells = generateLevel(); // Háttérkép beállítása
+        cells = generateLevel(); 
         gameOverScreen.style.display = "none";
     }
 
