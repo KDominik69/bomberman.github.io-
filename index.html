@@ -133,7 +133,7 @@
             background-size: cover;
             background-position: center;
         }
-        .enemy {
+        .bober {
             background-image: url('alap.png');
             background-size: cover;
             background-position: center;
@@ -548,8 +548,7 @@ pauseButton.addEventListener('click', () => {
         pauseButton.textContent = "SZÜNET"; 
     }
 });
-
-    function generateLevel() {
+function generateLevel() {
     gameBoard.innerHTML = "";
     const cells = [];
     enemies = [];
@@ -576,23 +575,37 @@ pauseButton.addEventListener('click', () => {
                 cell.classList.add("player");
                 playerPos = { x: startingPosition.x, y: startingPosition.y };
             } else if (playerArea.some(pos => pos.x === j && pos.y === i)) {
+                
             } else if (i % 2 === 0 && j % 2 === 0) {
                 cell.classList.add("wall");
             } else if (Math.random() < 0.5) {
                 cell.classList.add("destructible-wall");
-            } else if (Math.random() < 0.05) {
-                cell.classList.add("enemy");
-                enemies.push({ x: j, y: i, type: "default" });
-            } else if (Math.random() < 0.02) {
-                cell.classList.add("tudjaholvagy");
-                enemies.push({ x: j, y: i, type: "tudjaholvagy" });
-            } else if (Math.random() < 0.01) {
-                cell.classList.add("wallwalker");
-                enemies.push({ x: j, y: i, type: "wallwalker" });
             }
 
             cells[i][j] = cell;
             gameBoard.appendChild(cell);
+        }
+    }
+
+    let enemyCount = 0;
+    while (enemyCount < 10) {
+        const randomX = Math.floor(Math.random() * gridSizeX);
+        const randomY = Math.floor(Math.random() * gridSizeY);
+
+        if (cells[randomY][randomX].classList.length === 1 && 
+            !playerArea.some(pos => pos.x === randomX && pos.y === randomY)) {
+            const enemyType = Math.random();
+            if (enemyType < 0.33) {
+                cells[randomY][randomX].classList.add("bober");
+                enemies.push({ x: randomX, y: randomY, type: "default" });
+            } else if (enemyType < 0.66) {
+                cells[randomY][randomX].classList.add("tudjaholvagy");
+                enemies.push({ x: randomX, y: randomY, type: "tudjaholvagy" });
+            } else {
+                cells[randomY][randomX].classList.add("wallwalker");
+                enemies.push({ x: randomX, y: randomY, type: "wallwalker" });
+            }
+            enemyCount++;
         }
     }
 
@@ -609,35 +622,33 @@ pauseButton.addEventListener('click', () => {
     }
 
     let powerupCount = 0;
-while (powerupCount < 3) {
-    const randomX = Math.floor(Math.random() * gridSizeX);
-    const randomY = Math.floor(Math.random() * gridSizeY);
+    while (powerupCount < 3) {
+        const randomX = Math.floor(Math.random() * gridSizeX);
+        const randomY = Math.floor(Math.random() * gridSizeY);
 
-    if (cells[randomY][randomX].classList.contains("destructible-wall") && 
-        !cells[randomY][randomX].classList.contains("exit")) {
-        const powerupType = Math.random();
-        if (powerupType < 0.5) {
-            cells[randomY][randomX].classList.add("bigbomb-powerup");
-        } else if (powerupType < 0.8) {
-            cells[randomY][randomX].classList.add("freeze-powerup");
-        } else {
-            cells[randomY][randomX].classList.add("shield-powerup"); 
+        if (cells[randomY][randomX].classList.contains("destructible-wall") && 
+            !cells[randomY][randomX].classList.contains("exit")) {
+            const powerupType = Math.random();
+            if (powerupType < 0.5) {
+                cells[randomY][randomX].classList.add("bigbomb-powerup");
+            } else if (powerupType < 0.8) {
+                cells[randomY][randomX].classList.add("freeze-powerup");
+            } else {
+                cells[randomY][randomX].classList.add("shield-powerup"); 
+            }
+            
+            const overlay = document.createElement("div");
+            overlay.classList.add("overlay");
+            cells[randomY][randomX].appendChild(overlay); 
+            overlay.style.display = 'block'; 
+            powerupCount++;
         }
-        
-      
-        const overlay = document.createElement("div");
-        overlay.classList.add("overlay");
-        cells[randomY][randomX].appendChild(overlay); 
-        overlay.style.display = 'block'; 
-        powerupCount++;
     }
-}
 
     setRandomBackground();
 
     return cells;
 }
-
 let cells = generateLevel();
 let canMove = true;
 function movePlayer(dx, dy) {
@@ -650,7 +661,7 @@ function movePlayer(dx, dy) {
         const targetCell = cells[newY][newX];
         if (!targetCell.classList.contains("wall") && 
             !targetCell.classList.contains("destructible-wall") && 
-            !targetCell.classList.contains("enemy") &&
+            !targetCell.classList.contains("bober") &&
             !targetCell.classList.contains("tudjaholvagy") && 
             !targetCell.classList.contains("wallwalker")) {
             
@@ -773,8 +784,8 @@ function explode(x, y) {
                     break; 
                 }
 
-                if (cell.classList.contains("enemy") || cell.classList.contains("tudjaholvagy") || cell.classList.contains("wallwalker")) {
-                    cell.classList.remove("enemy", "tudjaholvagy", "wallwalker");
+                if (cell.classList.contains("bober") || cell.classList.contains("tudjaholvagy") || cell.classList.contains("wallwalker")) {
+                    cell.classList.remove("bober", "tudjaholvagy", "wallwalker");
                     enemies = enemies.filter(enemy => !(enemy.x === newX && enemy.y === newY));
                 }
 
@@ -834,7 +845,7 @@ function moveEnemies() {
                     newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY &&
                     !cells[newY][newX].classList.contains("wall") &&
                     !cells[newY][newX].classList.contains("destructible-wall") &&
-                    !cells[newY][newX].classList.contains("enemy") &&
+                    !cells[newY][newX].classList.contains("bober") &&
                     !cells[newY][newX].classList.contains("bomb") && 
                     !cells[newY][newX].classList.contains("explosion") 
                 ) {
@@ -870,7 +881,7 @@ function moveEnemies() {
 
             if (
                 newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY &&
-                !cells[newY][newX].classList.contains("enemy") &&
+                !cells[newY][newX].classList.contains("bober") &&
                 !cells[newY][newX].classList.contains("bomb") && 
                 !cells[newY][newX].classList.contains("explosion") 
             ) {
@@ -894,11 +905,11 @@ function moveEnemies() {
                 newX >= 0 && newY >= 0 && newX < gridSizeX && newY < gridSizeY &&
                 !cells[newY][newX].classList.contains("wall") &&
                 !cells[newY][newX].classList.contains("destructible-wall") &&
-                !cells[newY][newX].classList.contains("enemy") &&
+                !cells[newY][newX].classList.contains("bober") &&
                 !cells[newY][newX].classList.contains("bomb") && 
                 !cells[newY][newX].classList.contains("explosion") 
             ) {
-                cells[enemy.y][enemy.x].classList.remove("enemy");
+                cells[enemy.y][enemy.x].classList.remove("bober");
                 enemy.x = newX;
                 enemy.y = newY;
 
@@ -907,7 +918,7 @@ function moveEnemies() {
                         gameOver();
                     }
                 } else {
-                    cells[enemy.y][enemy.x].classList.add("enemy");
+                    cells[enemy.y][enemy.x].classList.add("bober");
                 }
             }
         }
