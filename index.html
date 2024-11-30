@@ -601,7 +601,8 @@ pauseButton.addEventListener('click', () => {
         const randomX = Math.floor(Math.random() * gridSizeX);
         const randomY = Math.floor(Math.random() * gridSizeY);
 
-        if (cells[randomY][randomX].classList.length === 1) { 
+        const isExitCloseToPlayer = Math.abs(randomX - playerPos.x) <= 5 && Math.abs(randomY - playerPos.y) <= 5;
+        if (cells[randomY][randomX].classList.length === 1 && !isExitCloseToPlayer) {
             cells[randomY][randomX].classList.add("exit");
             exitPlaced = true;
         }
