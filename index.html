@@ -50,7 +50,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             display: none; 
-            
+            z-index: 1001;
         }
 
         #restartButton {
@@ -227,6 +227,22 @@
     z-index: 1000; 
     display: none; 
 }
+#closeOverlayButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background-color: #FF5733;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1002; /* Hogy a gomb a játék fölött legyen */
+        }
+
+        #closeOverlayButton:hover {
+            background-color: #C70039;
+        }
 body {
             background-image: url('hater.png');
             background-size: cover;
@@ -305,6 +321,15 @@ body {
 #pauseButton:hover {
     background-color: #C70039;
 }
+
+#lensImage {
+            padding-left: 600px;
+            
+            width: 50px; /* Példa szélesség */
+            height: 50px; /* Példa magasság */
+            z-index: 1001; /* Hogy a kép a játék fölött legyen */
+        }
+       
     </style>
 </head>
 <body>
@@ -323,7 +348,7 @@ body {
             <option value="player">Játékos</option>
         </select>
     </nav>
-
+    <button id="closeOverlayButton">Kontaktlencse használata</button>
     <div id="backgroundOverlay"></div>
     
     <div id="tortenet">
@@ -340,7 +365,7 @@ body {
 
     
         <div id="gameContainer">
-            <h2>Bomberman-játék</h2>
+            <h2>Bomberman-játék <img id="lensImage" src="nolencse.jpg" alt="Lencse Kép"></h2>
             <p>Mozgás: Nyílbillentyűk és WASD | Bomba: Space</p>
             <p>(Bugot tapasztal írjon ide:kmetzdominik69@gmail.com 2030-ra "javítjuk")</p>
             <div id="gameBoard"></div>
@@ -352,7 +377,50 @@ body {
     </div>
     <audio id="laughAudio" src="cj.mp3"></audio>
 <script>
+    
+    const closeOverlayButton = document.getElementById('closeOverlayButton');
+        const lensImage = document.getElementById('lensImage');
 
+        closeOverlayButton.addEventListener('click', () => {
+            const overlays = document.querySelectorAll('.overlay');
+            overlays.forEach(overlay => {
+                overlay.style.display = 'none'; 
+            });
+
+            lensImage.src = 'lencse.jpg'; 
+
+            let countdown = 19; 
+            closeOverlayButton.disabled = true; 
+
+            const interval = setInterval(() => {
+                closeOverlayButton.textContent = `${countdown} másodperc`;
+                countdown--;
+
+                if (countdown < 0) {
+                    clearInterval(interval);
+                    lensImage.src = 'nolencse.jpg'; 
+                    closeOverlayButton.textContent = 'Kontaktlencse használata';
+                    closeOverlayButton.disabled = false; 
+                    overlays.forEach(overlay => {
+                        overlay.style.display = 'block';
+                    });
+                }
+            }, 1000); 
+            
+            setTimeout(() => {
+                lensImage.src = 'nolencse.jpg'; 
+            }, 10000); 
+
+            setTimeout(() => {
+                overlays.forEach(overlay => {
+                    overlay.style.display = 'block'; 
+                });
+            }, 10000); 
+
+            setTimeout(() => {
+                closeOverlayButton.disabled = false; 
+            }, 20000); 
+        });
 const gomb = document.getElementById('tortenetGomb');
         const tortenetDoboz = document.getElementById('tortenet');
         const backgroundOverlay = document.getElementById('backgroundOverlay');
@@ -889,6 +957,7 @@ function restartGame() {
 
 restartButton.addEventListener("click", restartGame);
 setInterval(moveEnemies, 1000);
+showOverlays();
 </script>
 
 </body>
