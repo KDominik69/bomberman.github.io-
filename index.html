@@ -17,13 +17,14 @@
             height: 100vh;
             font-family: cursive;
         }
+        
         #gameContainer {
             padding: 20px;
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            padding-bottom: 40px;
-            padding-right: 60px;
+            padding-bottom: 20px;
+            padding-right: 20px;
             padding-top: 0px;
         }
         #gameBoard {
@@ -151,37 +152,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.262);
             overflow: hidden;
         }
-        #enemyDescriptions {
-            flex: 1;
-            background-color: rgba(240, 240, 240, 0.325);
-            padding: 20px;
-            border-right: 2px solid #ccc;
-          
-            font-family: cursive;
-        }
-        #enemyDescriptions h3 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-family: cursive;
-        }
-        .enemy-description {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            font-family: cursive;
-            
-        }
-        .enemy-description img {
-            width: 50px;
-            height: 50px;
-            margin-right: 10px;
-        }
-        .enemy-description span {
-            font-size: 14px;
-            color: #000000;
-            font-family: cursive;
-            font-weight:bolder;
-        }
+        
 
         #tortenetGomb {
             position: fixed;
@@ -214,6 +185,7 @@
             z-index: 1000;
             text-align: center;
             width: 300px;
+            
         }
 
         #tortenet h3 {
@@ -242,85 +214,131 @@
             color: red;
         }
 
-        #backgroundOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            display: none;
-        }
+        
         .overlay {
     position: absolute;
     top: 0;
     left: 0;
-    width: 40px; /* A powerup mérete */
-    height: 40px; /* A powerup mérete */
+    width: 40px; 
+    height: 40px;
     background-image: url('torhetofal.png');
     background-size: cover;
     background-position: center;
-    z-index: 1000; /* Hogy a játékos és más elemek fölött legyen */
-    display: none; /* Alapértelmezett rejtett */
+    z-index: 1000; 
+    display: none; 
+}
+body {
+            background-image: url('hater.png');
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: cursive;
+        }
+    
+        nav {
+            position:absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            padding: 10px;
+            padding-left: 2px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        select {
+            margin-left: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #description {
+            margin-top: 20px;
+            font-family: cursive;
+            color: #000;
+            text-align: center;
+        }
+        #enemyDisplay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(84, 84, 84, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: none; 
+    z-index: 1001;
+    color: whitesmoke;
+    text-align: center; 
 }
 
+#enemyDisplay img {
+    width: 100px;
+    height: 100px; 
+    margin-bottom: 10px;
+    display: block; 
+    margin-left: auto;
+    margin-right: auto; 
+}
+
+        #pauseButton {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background-color: #FF5733;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 1000; /* Hogy a játék fölött legyen */
+}
+
+#pauseButton:hover {
+    background-color: #C70039;
+}
     </style>
 </head>
 <body>
-   
-    <button id="tortenetGomb">Történet</button>
+    <button id="pauseButton">SZÜNET</button>
+    <nav>
+        <button id="tortenetGomb">Történet</button>
+        <select id="enemySelect">
+            <option value="">Leírások</option>
+            <option value="basic">Alap ellenség</option>
+            <option value="mole">Vakond ellenség</option>
+            <option value="chicken">Csirke ellenség</option>
+            <option value="freeze">Fagyasztás</option>
+            <option value="bigbomb">Robbanás</option>
+            <option value="shield">Védőpajzs</option>
+            <option value="exit">Kijárat</option>
+            <option value="player">Játékos</option>
+        </select>
+    </nav>
 
     <div id="backgroundOverlay"></div>
     
     <div id="tortenet">
         <button class="close">&times;</button>
         <h3>Történet</h3>
-        <p>Hősünket a gonosz JG-boszorkány egy véget nem érő, szörnyekkel teli labirintusba varázsolta, hogy szórakoztassa. JG power-upokat rejtett el, amelyeket hősünk varázskontaktlencséjének köszönhetően látt. Hősünk célja az, hogy valahogy kijusson (spoiler: nem fog), és megölje a gonosz JG boszorkát. Hősünk különleges képessége az, hogy végtelen számú bombát tud lerakni, de egyszerre csak egyet. Ez azonban elég gyenge az ellenségekre, mivel csak a robbanás pillanatában van halálos hatással, de hősünkre mindig.</p>
+        <p>Hősünket a gonosz JG-boszorkány egy véget nem érő, szörnyekkel teli labirintusba varázsolta, hogy szórakoztassa...</p>
     </div>
 
+    <div id="enemyDisplay">
+        <img id="enemyImage" src="" alt="">
+        <p id="enemyDescription"></p>
+        <button id="closeEnemyDisplay">Bezár</button>
     </div>
-    <div id="container">
-        <div id="enemyDescriptions">
-            <h3>Ellenségek:</h3>
-            <div class="enemy-description">
-                <img src="alap.png" alt="Alap ellenség">
-                <span>Alap ellenség: Random módon mozog a pályán.</span>
-            </div>
-            <div class="enemy-description">
-                <img src="falonmegy.png" alt="Vakond ellenség">
-                <span>Vakond ellenség: Átmegy a falakon.</span>
-            </div>
-            <div class="enemy-description">
-                <img src="tudjaholvagy.png" alt="Csirke ellenség">
-                <span>Csirke ellenség: Tudja a játékos pozícióját és mindig felé megy.</span>
-            </div>
-            <h3>Powerupok:</h3>
-            <div class="enemy-description">
-                <img src="freeze.png" alt="Fagyasztás">
-                <span>Megfagyasztja az ellenségeket 6 másodpercig..("Falmögött van")</span>
-            </div>
-            <div class="enemy-description">
-                <img src="robbanas_plusz_1_power_up.gif" alt="Robbanás">
-                <span>Növeli a robbanás méretét..("Falmögött van")</span>
-            </div>
-            <div class="enemy-description">
-                <img src="pajzs.png" alt="Védőpajzs">
-                <span>Védelmet ad az ellenségektől és a robbanásoktól 6 másodpercig..("Falmögött van")</span>
-            </div>
-            <h3>Egyebek:</h3>
-            <div class="enemy-description">
-                <img src="kijarat.png" alt="Kijárat">
-                <span>Kijárat: ENNYI semmi több.</span>
-            </div>
-            <div class="enemy-description">
-                <img src="pixil-frame-0 (8).png" alt="Játékos">
-                <span>Játékös: története a történet gombra kattintva olvasható.</span>
-            </div>
-           
-        </div>
+
     
-      
         <div id="gameContainer">
             <h2>Bomberman-játék</h2>
             <p>Mozgás: Nyílbillentyűk és WASD | Bomba: Space</p>
@@ -336,24 +354,82 @@
 <script>
 
 const gomb = document.getElementById('tortenetGomb');
-    const tortenetDoboz = document.getElementById('tortenet');
-    const backgroundOverlay = document.getElementById('backgroundOverlay');
-    const closeBtn = document.querySelector('#tortenet .close');
+        const tortenetDoboz = document.getElementById('tortenet');
+        const backgroundOverlay = document.getElementById('backgroundOverlay');
+        const closeBtn = document.querySelector('#tortenet .close');
+        const enemySelect = document.getElementById('enemySelect');
+        const enemyDisplay = document.getElementById('enemyDisplay');
+        const enemyImage = document.getElementById('enemyImage');
+        const enemyDescription = document.getElementById('enemyDescription');
+        const closeEnemyDisplay = document.getElementById('closeEnemyDisplay');
 
-    gomb.addEventListener('click', () => {
-        backgroundOverlay.style.display = 'block';
-        tortenetDoboz.style.display = 'block';
-    });
+        gomb.addEventListener('click', () => {
+            backgroundOverlay.style.display = 'block';
+            tortenetDoboz.style.display = 'block';
+        });
 
-    closeBtn.addEventListener('click', () => {
-        backgroundOverlay.style.display = 'none';
-        tortenetDoboz.style.display = 'none';
-    });
+        closeBtn.addEventListener('click', () => {
+            backgroundOverlay.style.display = 'none';
+            tortenetDoboz.style.display = 'none';
+        });
 
-    backgroundOverlay.addEventListener('click', () => {
-        backgroundOverlay.style.display = 'none';
-        tortenetDoboz.style.display = 'none';
-    });
+        backgroundOverlay.addEventListener('click', () => {
+            backgroundOverlay.style.display = 'none';
+            tortenetDoboz.style.display = 'none';
+        });
+
+        enemySelect.addEventListener ('change', (event) => {
+            const selectedValue = event.target.value;
+            const descriptions = {
+                basic: {
+                    image: "alap.png",
+                    description: "Alap ellenség: Random módon mozog a pályán."
+                },
+                mole: {
+                    image: "falonmegy.png",
+                    description: "Vakond ellenség: Átmegy a falakon."
+                },
+                chicken: {
+                    image: "tudjaholvagy.png",
+                    description: "Csirke ellenség: Tudja a játékos pozícióját és mindig felé megy."
+                },
+                freeze: {
+                    image: "freeze.png",
+                    description: "Megfagyasztja az ellenségeket 6 másodpercig."
+                },
+                bigbomb: {
+                    image: "robbanas_plusz_1_power_up.gif",
+                    description: "Növeli a robbanás méretét."
+                },
+                shield: {
+                    image: "pajzs.png",
+                    description: "Védelmet ad az ellenségektől és a robbanásoktól 6 másodpercig."
+                },
+                exit: {
+                    image: "kijarat.png",
+                    description: "Kijárat: ENNYI semmi több."
+                },
+                player: {
+                    image: "pixil-frame-0 (8).png",
+                    description: "Játékos: története a történet gombra kattintva olvasható."
+                }
+            };
+
+            if (selectedValue) {
+                const selectedDescription = descriptions[selectedValue];
+                enemyImage.src = selectedDescription.image;
+                enemyDescription.textContent = selectedDescription.description;
+                enemyDisplay.style.display = 'block';
+            } else {
+                enemyDisplay.style.display = 'none';
+            }
+        });
+
+        closeEnemyDisplay.addEventListener('click', () => {
+            enemyDisplay.style.display = 'none';
+        });
+
+        
 
      const gameBoard = document.getElementById("gameBoard");
 const gameOverScreen = document.getElementById("gameOver");
@@ -390,6 +466,19 @@ function setRandomBackground() {
 
         document.body.style.backgroundImage = `url('${backgroundImage}')`;
     }
+
+    let isPaused = false; 
+
+const pauseButton = document.getElementById('pauseButton');
+
+pauseButton.addEventListener('click', () => {
+    isPaused = !isPaused; 
+    if (isPaused) {
+        pauseButton.textContent = "FOLYTATÁS"; 
+    } else {
+        pauseButton.textContent = "SZÜNET"; 
+    }
+});
 
     function generateLevel() {
     gameBoard.innerHTML = "";
@@ -465,11 +554,11 @@ while (powerupCount < 3) {
             cells[randomY][randomX].classList.add("shield-powerup"); 
         }
         
-        // Overlay létrehozása
+      
         const overlay = document.createElement("div");
         overlay.classList.add("overlay");
-        cells[randomY][randomX].appendChild(overlay); // Hozzáadjuk a cellához
-        overlay.style.display = 'block'; // Megjelenítjük az overlay-t
+        cells[randomY][randomX].appendChild(overlay); 
+        overlay.style.display = 'block'; 
         powerupCount++;
     }
 }
@@ -482,7 +571,7 @@ while (powerupCount < 3) {
 let cells = generateLevel();
 let canMove = true;
 function movePlayer(dx, dy) {
-    if (isGameOver || !canMove) return; 
+    if (isGameOver || !canMove || isPaused) return; 
 
     const newX = playerPos.x + dx;
     const newY = playerPos.y + dy;
@@ -559,7 +648,7 @@ function activateFreeze() {
 }
 
 function placeBomb() {
-    if (bombPlaced || isGameOver) return;
+    if (bombPlaced || isGameOver || isPaused) return;
 
     const bombX = playerPos.x;
     const bombY = playerPos.y;
@@ -583,10 +672,10 @@ function placeBomb() {
 
 function explode(x, y) {
     const directions = [
-        { dx: 0, dy: -1 }, // Felfelé
-        { dx: 0, dy: 1 },  // Lefelé
-        { dx: -1, dy: 0 }, // Balra
-        { dx: 1, dy: 0 },  // Jobbra
+        { dx: 0, dy: -1 }, 
+        { dx: 0, dy: 1 }, 
+        { dx: -1, dy: 0 },
+        { dx: 1, dy: 0 }, 
     ];
 
     cells[y][x].classList.add("explosion");
@@ -594,7 +683,7 @@ function explode(x, y) {
     let playerHit = x === playerPos.x && y === playerPos.y;
 
     directions.forEach(dir => {
-        for (let i = 1; i <= explosionRange; i++) { // Kezdjük 1-től, hogy a bomba helyét ne vizsgáljuk
+        for (let i = 1; i <= explosionRange; i++) { 
             const newX = x + dir.dx * i;
             const newY = y + dir.dy * i;
 
@@ -602,16 +691,16 @@ function explode(x, y) {
                 const cell = cells[newY][newX];
 
                 if (cell.classList.contains("wall")) {
-                    break; // Ha fal, állj meg
+                    break; 
                 }
 
                 if (cell.classList.contains("destructible-wall")) {
                     cell.classList.remove("destructible-wall");
                     const overlay = cell.querySelector('.overlay');
                     if (overlay) {
-                        overlay.remove(); // Eltávolítjuk az overlay-t
+                        overlay.remove();
                     }
-                    break; // Ha elpusztítottuk a falat, állj meg
+                    break; 
                 }
 
                 if (cell.classList.contains("enemy") || cell.classList.contains("tudjaholvagy") || cell.classList.contains("wallwalker")) {
@@ -649,7 +738,7 @@ function explode(x, y) {
     }, 1000);
 }
 function moveEnemies() {
-    if (isGameOver || isFrozen) return;
+    if (isGameOver || isFrozen || isPaused) return;
 
     enemies.forEach((enemy) => {
         if (cells[enemy.y][enemy.x].classList.contains("frozen")) {
