@@ -324,7 +324,21 @@ body {
 }
 
 #lensImage {
-            padding-left: 600px;
+            padding-left: 3px;
+            
+            width: 50px;
+            height: 50px; 
+            z-index: 1001; 
+        }
+        #freezImage {
+            padding-left: 474px;
+            
+            width: 50px;
+            height: 50px; 
+            z-index: 1001; 
+        }
+        #shieldImage {
+            padding-left: 3px;
             
             width: 50px;
             height: 50px; 
@@ -346,7 +360,9 @@ body {
             <option value="bigbomb">Robbanás</option>
             <option value="shield">Védőpajzs</option>
             <option value="exit">Kijárat</option>
+            <option value="lencse">Kontaktlencse</option>
             <option value="player">Játékos</option>
+            
         </select>
     </nav>
     <button id="closeOverlayButton">Kontaktlencse használata</button>
@@ -366,7 +382,7 @@ body {
 
     
         <div id="gameContainer">
-            <h2>Bomberman-játék <img id="lensImage" src="nolencse.jpg" alt="Lencse Kép"></h2>
+            <h2>Bomberman-játék <img id="freezImage" src="nofreez.png" alt="Lencse Kép"><img id="shieldImage" src="nopajzs.png" alt="Lencse Kép"><img id="lensImage" src="nolencse.jpg" alt="Lencse Kép"></h2>
             <p>Mozgás: Nyílbillentyűk és WASD | Bomba: Space</p>
             <p>(Bugot tapasztal írjon ide:kmetzdominik69@gmail.com 2030-ra "javítjuk")</p>
             <div id="gameBoard"></div>
@@ -410,13 +426,13 @@ body {
             
             setTimeout(() => {
                 lensImage.src = 'nolencse.jpg'; 
-            }, 10000); 
+            }, 5000); 
 
             setTimeout(() => {
                 overlays.forEach(overlay => {
                     overlay.style.display = 'block'; 
                 });
-            }, 10000); 
+            }, 5000); 
 
             setTimeout(() => {
                 closeOverlayButton.disabled = false; 
@@ -478,10 +494,15 @@ const gomb = document.getElementById('tortenetGomb');
                     image: "kijarat.png",
                     description: "Kijárat: ENNYI semmi több."
                 },
+                lencse: {
+                    image: "lencse.jpg",
+                    description: "Kontaktlencse: Láthatóvá teszi a powerupokat 5másodpercig."
+                },
                 player: {
                     image: "pixil-frame-0 (8).png",
                     description: "Játékos: története a történet gombra kattintva olvasható."
                 }
+                
             };
 
             if (selectedValue) {
@@ -708,20 +729,26 @@ function movePlayer(dx, dy) {
 
 function activateShield() {
     shieldActive = true;
+    document.getElementById('shieldImage').src = 'pajzs.png'; 
     shieldTimer = setTimeout(() => {
         shieldActive = false;
-        alert("A pajzs hatása véget ért!");
+        document.getElementById('shieldImage').src = 'nopajzs.png'; 
+        
     }, 6000);
 }
 
 function activateFreeze() {
     isFrozen = true;
+    // Frissítjük a freeze képet
+    document.getElementById('freezImage').src = 'freeze.png'; 
     enemies.forEach(enemy => {
         cells[enemy.y][enemy.x].classList.add("frozen");
     });
 
     freezeTimer = setTimeout(() => {
         isFrozen = false;
+        // Visszaállítjuk a freeze képet
+        document.getElementById('freezImage').src = 'nofreez.png'; 
         enemies.forEach(enemy => {
             cells[enemy.y][enemy.x].classList.remove("frozen");
         });
