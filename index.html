@@ -693,8 +693,10 @@ function movePlayer(dx, dy) {
 
             if (targetCell.classList.contains("exit")) {
                 alert("Tovább a következő pályára!");
-                startingPosition = { x: playerPos.x, y: playerPos.y };
-                cells = generateLevel();
+                // Visszaállítjuk a játékost a kezdőhelyre
+                playerPos = { x: 0, y: 0 }; // Kezdőhely
+                startingPosition = { x: 0, y: 0 }; // Kezdőhely
+                cells = generateLevel(); // Új pálya generálása
             }
 
             if (targetCell.classList.contains("bigbomb-powerup")) {
@@ -780,10 +782,10 @@ function placeBomb() {
 
 function explode(x, y) {
     const directions = [
-        { dx: 0, dy: -1 }, 
-        { dx: 0, dy: 1 }, 
+        { dx: 0, dy: -1 },
+        { dx: 0, dy: 1 },
         { dx: -1, dy: 0 },
-        { dx: 1, dy: 0 }, 
+        { dx: 1, dy: 0 },
     ];
 
     cells[y][x].classList.add("explosion");
@@ -791,7 +793,7 @@ function explode(x, y) {
     let playerHit = x === playerPos.x && y === playerPos.y;
 
     directions.forEach(dir => {
-        for (let i = 1; i <= explosionRange; i++) { 
+        for (let i = 1; i <= explosionRange; i++) {
             const newX = x + dir.dx * i;
             const newY = y + dir.dy * i;
 
@@ -799,7 +801,7 @@ function explode(x, y) {
                 const cell = cells[newY][newX];
 
                 if (cell.classList.contains("wall")) {
-                    break; 
+                    break;
                 }
 
                 if (cell.classList.contains("destructible-wall")) {
@@ -808,7 +810,7 @@ function explode(x, y) {
                     if (overlay) {
                         overlay.remove();
                     }
-                    break; 
+                    // A robbanás terjedése folytatódik
                 }
 
                 if (cell.classList.contains("bober") || cell.classList.contains("tudjaholvagy") || cell.classList.contains("wallwalker")) {
