@@ -663,11 +663,11 @@ function generateLevel() {
         if (cells[randomY][randomX].classList.contains("destructible-wall") && 
             !cells[randomY][randomX].classList.contains("exit")) {
             const powerupType = Math.random();
-            if (powerupType < 0.6) { 
+            if (powerupType < 0.5) { 
             cells[randomY][randomX].classList.add("bigbomb-powerup");
             } else if (powerupType < 0.7) { 
             cells[randomY][randomX].classList.add("tobbomba-powerup"); // Új power-up
-            } else if (powerupType < 0.4) { 
+            } else if (powerupType < 0.8) { 
             cells[randomY][randomX].classList.add("freeze-powerup"); // Freeze visszakerül
             } else { 
             cells[randomY][randomX].classList.add("shield-powerup");
@@ -681,6 +681,7 @@ function generateLevel() {
             powerupCount++;
         }
     }
+
 
     setRandomBackground();
 
