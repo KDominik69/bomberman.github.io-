@@ -108,7 +108,7 @@
             height: 40px;
         }
         .freeze-powerup {
-            background-image: url('freeze.png');
+            background-image: url('New Piskel (2).gif');
             background-size: cover;
             background-position: center;
             
@@ -124,7 +124,12 @@
             background-position: center;
         }
         .shield-powerup {
-            background-image: url('pajzs.png'); 
+            background-image: url('New Piskel (3).gif'); 
+            background-size: cover;
+            background-position: center;
+        }
+        .tobbomba-powerup{
+            background-image: url('tobbbomba.png'); 
             background-size: cover;
             background-position: center;
         }
@@ -537,6 +542,10 @@ let isFrozen = false;
 let freezeTimer;
 let shieldActive = false;
 let shieldTimer; 
+let maxBombs = 1;
+let activeBombs = 0; // Jelenleg elhelyezett bombák száma
+
+
 
 function setRandomBackground() {
         const randomNum = Math.floor(Math.random() * 3) + 1; 
@@ -650,13 +659,16 @@ function generateLevel() {
         if (cells[randomY][randomX].classList.contains("destructible-wall") && 
             !cells[randomY][randomX].classList.contains("exit")) {
             const powerupType = Math.random();
-            if (powerupType < 0.5) {
-                cells[randomY][randomX].classList.add("bigbomb-powerup");
-            } else if (powerupType < 0.8) {
-                cells[randomY][randomX].classList.add("freeze-powerup");
-            } else {
-                cells[randomY][randomX].classList.add("shield-powerup"); 
+            if (powerupType < 0.6) { 
+            cells[randomY][randomX].classList.add("bigbomb-powerup");
+            } else if (powerupType < 0.7) { 
+            cells[randomY][randomX].classList.add("tobbomba-powerup"); // Új power-up
+            } else if (powerupType < 0.4) { 
+            cells[randomY][randomX].classList.add("freeze-powerup"); // Freeze visszakerül
+            } else { 
+            cells[randomY][randomX].classList.add("shield-powerup");
             }
+
             
             const overlay = document.createElement("div");
             overlay.classList.add("overlay");
@@ -713,6 +725,12 @@ function movePlayer(dx, dy) {
                 targetCell.classList.remove("shield-powerup");
                 activateShield();
             }
+            
+            if (targetCell.classList.contains("tobbomba-powerup")) {
+    targetCell.classList.remove("tobbomba-powerup");
+    maxBombs++; // Növelje a maximálisan elhelyezhető bombák számát
+}
+
 
             if (targetCell.classList.contains("explosion")) {
                 if (!shieldActive) {
@@ -758,27 +776,23 @@ function activateFreeze() {
 }
 
 function placeBomb() {
-    if (bombPlaced || isGameOver || isPaused) return;
+    if (activeBombs >= maxBombs || isGameOver || isPaused) return; // Ne helyezzen el több bombát a megengedettnél
 
     const bombX = playerPos.x;
     const bombY = playerPos.y;
+
+    if (cells[bombY][bombX].classList.contains("bomb")) return; // Ne rakjon le bombát ugyanarra a helyre
+
     cells[bombY][bombX].classList.add("bomb");
-    bombPlaced = true;
+    activeBombs++;
 
     setTimeout(() => {
         cells[bombY][bombX].classList.remove("bomb");
-
-        if (bombX === playerPos.x && bombY === playerPos.y) {
-            if (!shieldActive) {
-                gameOver();
-            }
-        } else {
-            explode(bombX, bombY);
-        }
-
-        bombPlaced = false;
+        explode(bombX, bombY);
+        activeBombs--; // Csökkentse a számlálót, miután a bomba felrobbant
     }, 2000);
 }
+
 
 function explode(x, y) {
     const directions = [
