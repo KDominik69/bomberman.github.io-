@@ -411,7 +411,7 @@ body {
 
             lensImage.src = 'lencse.jpg'; 
 
-            let countdown = 19; 
+            let countdown = 29; 
             closeOverlayButton.disabled = true; 
 
             const interval = setInterval(() => {
@@ -441,7 +441,7 @@ body {
 
             setTimeout(() => {
                 closeOverlayButton.disabled = false; 
-            }, 20000); 
+            }, 30000); 
         });
 const gomb = document.getElementById('tortenetGomb');
         const tortenetDoboz = document.getElementById('tortenet');
@@ -547,7 +547,7 @@ let freezeTimer;
 let shieldActive = false;
 let shieldTimer; 
 let maxBombs = 1;
-let activeBombs = 0; // Jelenleg elhelyezett bombák száma
+let activeBombs = 0; 
 
 
 
@@ -666,9 +666,9 @@ function generateLevel() {
             if (powerupType < 0.5) { 
             cells[randomY][randomX].classList.add("bigbomb-powerup");
             } else if (powerupType < 0.7) { 
-            cells[randomY][randomX].classList.add("tobbomba-powerup"); // Új power-up
+            cells[randomY][randomX].classList.add("tobbomba-powerup"); 
             } else if (powerupType < 0.8) { 
-            cells[randomY][randomX].classList.add("freeze-powerup"); // Freeze visszakerül
+            cells[randomY][randomX].classList.add("freeze-powerup"); 
             } else { 
             cells[randomY][randomX].classList.add("shield-powerup");
             }
@@ -681,7 +681,6 @@ function generateLevel() {
             powerupCount++;
         }
     }
-
 
     setRandomBackground();
 
@@ -710,10 +709,9 @@ function movePlayer(dx, dy) {
 
             if (targetCell.classList.contains("exit")) {
                 alert("Tovább a következő pályára!");
-                // Visszaállítjuk a játékost a kezdőhelyre
-                playerPos = { x: 0, y: 0 }; // Kezdőhely
-                startingPosition = { x: 0, y: 0 }; // Kezdőhely
-                cells = generateLevel(); // Új pálya generálása
+                playerPos = { x: 0, y: 0 }; 
+                startingPosition = { x: 0, y: 0 }; 
+                cells = generateLevel(); 
             }
 
             if (targetCell.classList.contains("bigbomb-powerup")) {
@@ -733,7 +731,7 @@ function movePlayer(dx, dy) {
             
             if (targetCell.classList.contains("tobbomba-powerup")) {
     targetCell.classList.remove("tobbomba-powerup");
-    maxBombs++; // Növelje a maximálisan elhelyezhető bombák számát
+    maxBombs++; 
 }
 
 
@@ -764,7 +762,6 @@ function activateShield() {
 
 function activateFreeze() {
     isFrozen = true;
-    // Frissítjük a freeze képet
     document.getElementById('freezImage').src = 'freeze.png'; 
     enemies.forEach(enemy => {
         cells[enemy.y][enemy.x].classList.add("frozen");
@@ -772,7 +769,6 @@ function activateFreeze() {
 
     freezeTimer = setTimeout(() => {
         isFrozen = false;
-        // Visszaállítjuk a freeze képet
         document.getElementById('freezImage').src = 'nofreez.png'; 
         enemies.forEach(enemy => {
             cells[enemy.y][enemy.x].classList.remove("frozen");
@@ -781,12 +777,12 @@ function activateFreeze() {
 }
 
 function placeBomb() {
-    if (activeBombs >= maxBombs || isGameOver || isPaused) return; // Ne helyezzen el több bombát a megengedettnél
+    if (activeBombs >= maxBombs || isGameOver || isPaused) return; 
 
     const bombX = playerPos.x;
     const bombY = playerPos.y;
 
-    if (cells[bombY][bombX].classList.contains("bomb")) return; // Ne rakjon le bombát ugyanarra a helyre
+    if (cells[bombY][bombX].classList.contains("bomb")) return; 
 
     cells[bombY][bombX].classList.add("bomb");
     activeBombs++;
@@ -794,7 +790,7 @@ function placeBomb() {
     setTimeout(() => {
         cells[bombY][bombX].classList.remove("bomb");
         explode(bombX, bombY);
-        activeBombs--; // Csökkentse a számlálót, miután a bomba felrobbant
+        activeBombs--; 
     }, 2000);
 }
 
@@ -829,7 +825,6 @@ function explode(x, y) {
                     if (overlay) {
                         overlay.remove();
                     }
-                    // A robbanás terjedése folytatódik
                 }
 
                 if (cell.classList.contains("bober") || cell.classList.contains("tudjaholvagy") || cell.classList.contains("wallwalker")) {
